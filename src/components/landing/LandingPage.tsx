@@ -4,14 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
+  const [isAnnual, setIsAnnual] = useState(false);
 
   const plans = [
     {
       name: 'Basic',
-      price: '$29',
+      monthlyPrice: 29,
+      annualPrice: 23,
       description: 'Perfect for small businesses starting their loyalty journey',
       features: [
         '1 Active Campaign',
@@ -23,7 +26,8 @@ export const LandingPage = () => {
     },
     {
       name: 'Premium',
-      price: '$59',
+      monthlyPrice: 59,
+      annualPrice: 47,
       description: 'Everything you need to scale your loyalty program',
       features: [
         'Unlimited Campaigns',
@@ -56,20 +60,20 @@ export const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur shadow-sm border-b border-blue-100">
+      <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-xl">
+              <div className="bg-blue-600 p-2 rounded-lg">
                 <Heart className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-gray-900">
                 LOYO
               </span>
             </div>
-            <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+            <Button onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
               Get Started Free
             </Button>
           </div>
@@ -77,14 +81,14 @@ export const LandingPage = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50">
         <div className="text-center">
-          <Badge className="mb-6 bg-blue-100 text-blue-700 hover:bg-blue-100">
+          <Badge className="mb-6 bg-blue-50 text-blue-600 hover:bg-blue-50 border-blue-200">
             🎉 14-Day Free Premium Trial - No Credit Card Required
           </Badge>
           <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Turn Every Customer Into a 
-            <span className="block bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            <span className="block text-blue-600">
               Loyal Advocate
             </span>
           </h1>
@@ -96,12 +100,12 @@ export const LandingPage = () => {
             <Button 
               size="lg" 
               onClick={() => navigate('/auth')}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-lg px-8 py-3"
+              className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3"
             >
               <Zap className="h-5 w-5 mr-2" />
               Start Your Free Trial
             </Button>
-            <Button variant="outline" size="lg" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+            <Button variant="outline" size="lg" className="border-gray-300 text-gray-700 hover:bg-gray-50 text-lg px-8 py-3">
               <QrCode className="h-5 w-5 mr-2" />
               Watch Demo
             </Button>
@@ -113,7 +117,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Features */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Everything You Need to Build Loyalty
@@ -124,12 +128,12 @@ export const LandingPage = () => {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
             <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
                 <QrCode className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl">Smart QR Loyalty Cards</CardTitle>
+              <CardTitle className="text-xl text-gray-900">Smart QR Loyalty Cards</CardTitle>
               <CardDescription className="text-gray-600">
                 Dynamic QR codes that work like magic. Customers scan to earn points, 
                 redeem rewards, and join exclusive promotions instantly.
@@ -137,12 +141,12 @@ export const LandingPage = () => {
             </CardHeader>
           </Card>
           
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
             <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
                 <TrendingUp className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl">Advanced Analytics</CardTitle>
+              <CardTitle className="text-xl text-gray-900">Advanced Analytics</CardTitle>
               <CardDescription className="text-gray-600">
                 Deep insights into customer behavior, visit patterns, and ROI tracking. 
                 Know exactly what drives loyalty and revenue.
@@ -150,12 +154,12 @@ export const LandingPage = () => {
             </CardHeader>
           </Card>
           
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
             <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
                 <Star className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl">Automated Campaigns</CardTitle>
+              <CardTitle className="text-xl text-gray-900">Automated Campaigns</CardTitle>
               <CardDescription className="text-gray-600">
                 Set up double points days, birthday rewards, and win-back campaigns 
                 that run on autopilot while you focus on your business.
@@ -166,7 +170,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Social Proof */}
-      <section className="bg-white/50 backdrop-blur">
+      <section className="bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h3 className="text-2xl font-semibold text-gray-900 mb-8">
@@ -183,40 +187,71 @@ export const LandingPage = () => {
       </section>
 
       {/* Pricing */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-8">
             Start free, scale as you grow. No hidden fees, cancel anytime.
           </p>
+          
+          {/* Annual Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className={`text-sm ${!isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>Monthly</span>
+            <button 
+              onClick={() => setIsAnnual(!isAnnual)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAnnual ? 'bg-blue-600' : 'bg-gray-200'}`}
+            >
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isAnnual ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+            <span className={`text-sm ${isAnnual ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>Annual</span>
+            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+              Save 20% with Annual Payment
+            </Badge>
+          </div>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan) => (
             <Card key={plan.name} className={`relative ${
-              plan.popular ? 'border-blue-500 ring-2 ring-blue-200 shadow-xl' : 'border-blue-100'
-            } hover:shadow-lg transition-all duration-300`}>
+              plan.popular ? 'border-blue-500 ring-2 ring-blue-200 shadow-xl' : 'border-gray-200'
+            } hover:shadow-lg transition-all duration-300 bg-white`}>
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-1 text-sm font-medium">
+                  <Badge className="bg-blue-600 text-white px-4 py-1 text-sm font-medium">
                     Most Popular
                   </Badge>
                 </div>
               )}
               {plan.trial && (
-                <div className="absolute -top-4 right-4">
-                  <Badge className="bg-green-500 text-white px-3 py-1 text-sm font-medium">
+                <div className="absolute -top-3 -right-3">
+                  <div className="bg-green-500 text-white text-xs font-medium px-3 py-1 rounded-full">
                     14-Day Free Trial
-                  </Badge>
+                  </div>
                 </div>
               )}
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                  {plan.price}
-                  {plan.price !== 'Custom' && <span className="text-lg text-gray-500">/month</span>}
+                <CardTitle className="text-2xl text-gray-900">{plan.name}</CardTitle>
+                <div className="text-4xl font-bold text-gray-900">
+                  {plan.price === 'Custom' ? (
+                    'Custom'
+                  ) : (
+                    <>
+                      {isAnnual && plan.monthlyPrice ? (
+                        <div>
+                          <span className="text-lg text-gray-400 line-through">${plan.monthlyPrice}</span>
+                          <div>${plan.annualPrice}<span className="text-lg text-gray-500">/month</span></div>
+                          <div className="text-sm text-gray-500 mt-1">billed annually</div>
+                        </div>
+                      ) : (
+                        <>
+                          ${plan.monthlyPrice}
+                          <span className="text-lg text-gray-500">/month</span>
+                        </>
+                      )}
+                    </>
+                  )}
                 </div>
                 <CardDescription className="text-gray-600">{plan.description}</CardDescription>
               </CardHeader>
@@ -234,8 +269,8 @@ export const LandingPage = () => {
                 <Button 
                   className={`w-full ${
                     plan.popular 
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' 
-                      : 'bg-white border border-blue-200 text-blue-700 hover:bg-blue-50'
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                      : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
                   }`}
                   onClick={() => navigate('/auth')}
                 >
@@ -248,7 +283,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
+      <footer className="bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-center space-x-3">
             <div className="bg-white/10 p-2 rounded-xl">
@@ -256,7 +291,7 @@ export const LandingPage = () => {
             </div>
             <span className="text-2xl font-bold">LOYO</span>
           </div>
-          <p className="text-center text-blue-200 mt-4">
+          <p className="text-center text-gray-400 mt-4">
             © 2024 LOYO. All rights reserved. Built with ❤️ for business owners.
           </p>
         </div>
