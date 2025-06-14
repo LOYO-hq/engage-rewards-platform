@@ -7,7 +7,6 @@ interface User {
   businessName?: string;
   subscriptionTier?: 'basic' | 'premium' | 'enterprise';
   subscriptionStatus?: 'active' | 'inactive' | 'trial';
-  needsOnboarding?: boolean;
 }
 
 interface AuthContextType {
@@ -15,14 +14,12 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, businessName: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
   signOut: () => void;
-  updateUser: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -56,9 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email,
         businessName: 'Demo Business',
-        subscriptionTier: 'premium',
-        subscriptionStatus: 'trial',
-        needsOnboarding: false
+        subscriptionTier: 'basic',
+        subscriptionStatus: 'active'
       };
       
       setUser(mockUser);
@@ -78,35 +74,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email,
         businessName,
-        subscriptionTier: 'premium',
-        subscriptionStatus: 'trial',
-        needsOnboarding: true
+        subscriptionTier: 'basic',
+        subscriptionStatus: 'trial'
       };
       
       setUser(newUser);
       localStorage.setItem('loyaltyUser', JSON.stringify(newUser));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const signInWithGoogle = async () => {
-    setIsLoading(true);
-    try {
-      // Simulate Google OAuth
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const googleUser: User = {
-        id: '2',
-        email: 'user@example.com',
-        businessName: '',
-        subscriptionTier: 'premium',
-        subscriptionStatus: 'trial',
-        needsOnboarding: true
-      };
-      
-      setUser(googleUser);
-      localStorage.setItem('loyaltyUser', JSON.stringify(googleUser));
     } finally {
       setIsLoading(false);
     }
@@ -117,16 +90,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('loyaltyUser');
   };
 
-  const updateUser = (updates: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...updates };
-      setUser(updatedUser);
-      localStorage.setItem('loyaltyUser', JSON.stringify(updatedUser));
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signInWithGoogle, signOut, updateUser }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,198 +1,126 @@
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { 
-  Upload, 
-  Building2, 
-  Target, 
-  Palette, 
-  QrCode, 
-  BarChart3, 
-  Star, 
-  CheckCircle, 
-  ArrowRight, 
-  ArrowLeft,
-  RotateCcw,
-  RotateCw,
-  ZoomIn,
-  ZoomOut,
-  Facebook,
-  Instagram,
-  Chrome,
-  MessageSquare,
-  Clock
-} from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
-  const { user, updateUser } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string>('');
-  
+  const totalSteps = 7;
   const [formData, setFormData] = useState({
-    businessName: user?.businessName || '',
+    businessName: '',
     businessType: '',
-    targetAudience: '',
-    primaryColor: '#3B82F6',
-    rewardStructure: 'stamps',
-    completionGoal: '10',
-    rewardType: 'discount',
-    rewardValue: '10',
-    facebook: '',
-    instagram: '',
-    googleReviews: false,
-    yelp: false,
-    businessHours: {
-      monday: { open: '09:00', close: '17:00', closed: false },
-      tuesday: { open: '09:00', close: '17:00', closed: false },
-      wednesday: { open: '09:00', close: '17:00', closed: false },
-      thursday: { open: '09:00', close: '17:00', closed: false },
-      friday: { open: '09:00', close: '17:00', closed: false },
-      saturday: { open: '09:00', close: '17:00', closed: false },
-      sunday: { open: '09:00', close: '17:00', closed: true }
-    }
+    businessDescription: '',
+    businessAddress: '',
+    ownerName: '',
+    phoneNumber: '',
+    showGoogleReviews: false
   });
 
-  const totalSteps = 10;
+  const businessTypes = [
+    { value: 'cafe', label: '☕ Cafe / Coffee Shop', emoji: '☕' },
+    { value: 'restaurant', label: '🍽️ Restaurant', emoji: '🍽️' },
+    { value: 'hair_salon', label: '💇 Hair Salon', emoji: '💇' },
+    { value: 'barber', label: '✂️ Barber Shop', emoji: '✂️' },
+    { value: 'mechanic', label: '🔧 Auto Repair / Mechanic', emoji: '🔧' },
+    { value: 'florist', label: '🌸 Florist / Flower Shop', emoji: '🌸' },
+    { value: 'bakery', label: '🥖 Bakery', emoji: '🥖' },
+    { value: 'spa', label: '🧖‍♀️ Spa / Wellness', emoji: '🧖‍♀️' },
+    { value: 'gym', label: '💪 Gym / Fitness', emoji: '💪' },
+    { value: 'retail', label: '🛍️ Retail Store', emoji: '🛍️' },
+    { value: 'dental', label: '🦷 Dental Practice', emoji: '🦷' },
+    { value: 'pet_services', label: '🐕 Pet Services', emoji: '🐕' },
+    { value: 'other', label: '📋 Other', emoji: '📋' }
+  ];
 
-  const handleNext = () => {
+  const steps = [
+    'Business Name',
+    'Business Type', 
+    'Business Description',
+    'Business Address',
+    'Owner/Contact Name',
+    'Phone Number',
+    'Complete Setup'
+  ];
+
+  const nextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
-      updateUser({ needsOnboarding: false });
+      // Complete onboarding and navigate to dashboard
       navigate('/');
     }
   };
 
-  const handlePrevious = () => {
+  const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setLogoFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setLogoPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const updateFormData = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const updateBusinessHours = (day: string, field: string, value: string | boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      businessHours: {
-        ...prev.businessHours,
-        [day]: {
-          ...prev.businessHours[day as keyof typeof prev.businessHours],
-          [field]: value
-        }
-      }
-    }));
-  };
-
-  const renderStep = () => {
+  const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Building2 className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Tell us about your business</h2>
-              <p className="text-gray-600">Let's start with the basics</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">What's your business name?</h3>
+              <p className="text-gray-600 mt-2">This will be visible to your customers</p>
             </div>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="businessName">Business Name</Label>
-                <Input
-                  id="businessName"
-                  value={formData.businessName}
-                  onChange={(e) => setFormData({...formData, businessName: e.target.value})}
-                  placeholder="Enter your business name"
-                />
-              </div>
-              <div>
-                <Label htmlFor="businessType">Business Type</Label>
-                <Input
-                  id="businessType"
-                  value={formData.businessType}
-                  onChange={(e) => setFormData({...formData, businessType: e.target.value})}
-                  placeholder="e.g., Coffee Shop, Restaurant, Retail Store"
-                />
-              </div>
+            <div>
+              <Label htmlFor="businessName" className="text-base">Business Name</Label>
+              <Input 
+                id="businessName" 
+                placeholder="e.g., Joe's Coffee House"
+                value={formData.businessName}
+                onChange={(e) => updateFormData('businessName', e.target.value)}
+                className="mt-2 text-lg py-3"
+                autoFocus
+              />
             </div>
           </div>
         );
 
       case 2:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Upload className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Upload Your Logo</h2>
-              <p className="text-gray-600">Add your business logo to personalize your loyalty cards</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">What type of business do you have?</h3>
+              <p className="text-gray-600 mt-2">Help us customize your loyalty program</p>
             </div>
-            <div className="space-y-4">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="hidden"
-                  id="logo-upload"
+            <div>
+              <Label htmlFor="businessType" className="text-base">Business Type</Label>
+              <Select 
+                value={formData.businessType} 
+                onValueChange={(value) => updateFormData('businessType', value)}
+              >
+                <SelectTrigger className="mt-2 text-lg py-3">
+                  <SelectValue placeholder="Select a business type..." />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {businessTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value} className="text-base py-3">
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formData.businessType === 'other' && (
+                <Input 
+                  placeholder="Please specify your business type"
+                  className="mt-3 text-base py-3"
+                  onChange={(e) => updateFormData('businessDescription', e.target.value)}
                 />
-                <label htmlFor="logo-upload" className="cursor-pointer">
-                  {logoPreview ? (
-                    <div className="space-y-4">
-                      <img 
-                        src={logoPreview} 
-                        alt="Logo preview" 
-                        className="mx-auto h-32 w-32 object-contain border rounded-lg"
-                      />
-                      <p className="text-sm text-gray-600">Click to change logo</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="h-8 w-8 text-gray-400 mx-auto" />
-                      <p className="text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                    </div>
-                  )}
-                </label>
-              </div>
-              {logoPreview && (
-                <div className="flex justify-center space-x-2">
-                  <Button variant="outline" size="sm">
-                    <RotateCcw className="h-4 w-4 mr-2" />
-                    Rotate Left
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <RotateCw className="h-4 w-4 mr-2" />
-                    Rotate Right
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <ZoomIn className="h-4 w-4 mr-2" />
-                    Zoom In
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <ZoomOut className="h-4 w-4 mr-2" />
-                    Zoom Out
-                  </Button>
-                </div>
               )}
             </div>
           </div>
@@ -200,19 +128,20 @@ const OnboardingPage = () => {
 
       case 3:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Target className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Who are your customers?</h2>
-              <p className="text-gray-600">Help us understand your target audience</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Describe your business</h3>
+              <p className="text-gray-600 mt-2">Optional - help customers understand what you offer</p>
             </div>
             <div>
-              <Label htmlFor="targetAudience">Target Audience</Label>
-              <Input
-                id="targetAudience"
-                value={formData.targetAudience}
-                onChange={(e) => setFormData({...formData, targetAudience: e.target.value})}
-                placeholder="e.g., Young professionals, Families, Coffee enthusiasts"
+              <Label htmlFor="businessDescription" className="text-base">Business Description</Label>
+              <Textarea 
+                id="businessDescription"
+                placeholder="e.g., Authentic Italian cuisine with a cozy atmosphere"
+                value={formData.businessDescription}
+                onChange={(e) => updateFormData('businessDescription', e.target.value)}
+                className="mt-2 text-base min-h-[100px]"
+                rows={4}
               />
             </div>
           </div>
@@ -220,277 +149,81 @@ const OnboardingPage = () => {
 
       case 4:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Palette className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Choose your brand colors</h2>
-              <p className="text-gray-600">Select colors that match your brand</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Where is your business located?</h3>
+              <p className="text-gray-600 mt-2">Your business address for customer reference</p>
             </div>
             <div>
-              <Label htmlFor="primaryColor">Primary Brand Color</Label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="color"
-                  id="primaryColor"
-                  value={formData.primaryColor}
-                  onChange={(e) => setFormData({...formData, primaryColor: e.target.value})}
-                  className="w-16 h-16 rounded-lg border-2 border-gray-300"
-                />
-                <Input
-                  value={formData.primaryColor}
-                  onChange={(e) => setFormData({...formData, primaryColor: e.target.value})}
-                  placeholder="#3B82F6"
-                  className="flex-1"
-                />
-              </div>
+              <Label htmlFor="businessAddress" className="text-base">Business Address</Label>
+              <Textarea 
+                id="businessAddress"
+                placeholder="123 Main Street, City, State 12345"
+                value={formData.businessAddress}
+                onChange={(e) => updateFormData('businessAddress', e.target.value)}
+                className="mt-2 text-base"
+                rows={3}
+              />
             </div>
           </div>
         );
 
       case 5:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <QrCode className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Design your loyalty program</h2>
-              <p className="text-gray-600">Choose how customers will earn rewards</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Who should we contact?</h3>
+              <p className="text-gray-600 mt-2">Primary contact person for this account</p>
             </div>
-            <div className="space-y-4">
-              <div>
-                <Label>Reward Structure</Label>
-                <ToggleGroup value={formData.rewardStructure} onValueChange={(value) => value && setFormData({...formData, rewardStructure: value})}>
-                  <ToggleGroupItem value="stamps">
-                    <Star className="h-4 w-4 mr-2" />
-                    Stamp Cards
-                  </ToggleGroupItem>
-                  <ToggleGroupItem value="points">
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Points System
-                  </ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-              <div>
-                <Label htmlFor="completionGoal">
-                  {formData.rewardStructure === 'stamps' ? 'Stamps to Complete Card' : 'Points for Reward'}
-                </Label>
-                <Input
-                  id="completionGoal"
-                  type="number"
-                  value={formData.completionGoal}
-                  onChange={(e) => setFormData({...formData, completionGoal: e.target.value})}
-                />
-              </div>
+            <div>
+              <Label htmlFor="ownerName" className="text-base">Owner/Contact Name</Label>
+              <Input 
+                id="ownerName"
+                placeholder="Your full name"
+                value={formData.ownerName}
+                onChange={(e) => updateFormData('ownerName', e.target.value)}
+                className="mt-2 text-lg py-3"
+              />
             </div>
           </div>
         );
 
       case 6:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Star className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Set your rewards</h2>
-              <p className="text-gray-600">What do customers get when they complete their card?</p>
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">What's your phone number?</h3>
+              <p className="text-gray-600 mt-2">For customer support and notifications</p>
             </div>
-            <div className="space-y-4">
-              <div>
-                <Label>Reward Type</Label>
-                <ToggleGroup value={formData.rewardType} onValueChange={(value) => value && setFormData({...formData, rewardType: value})}>
-                  <ToggleGroupItem value="discount">% Discount</ToggleGroupItem>
-                  <ToggleGroupItem value="free">Free Item</ToggleGroupItem>
-                  <ToggleGroupItem value="cashback">Cash Back</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-              <div>
-                <Label htmlFor="rewardValue">
-                  {formData.rewardType === 'discount' ? 'Discount Percentage' : 
-                   formData.rewardType === 'cashback' ? 'Cash Back Amount' : 'Free Item Description'}
-                </Label>
-                <Input
-                  id="rewardValue"
-                  value={formData.rewardValue}
-                  onChange={(e) => setFormData({...formData, rewardValue: e.target.value})}
-                  placeholder={formData.rewardType === 'free' ? 'e.g., Free Coffee' : '10'}
-                />
-              </div>
+            <div>
+              <Label htmlFor="phoneNumber" className="text-base">Phone Number</Label>
+              <Input 
+                id="phoneNumber"
+                placeholder="(555) 123-4567"
+                value={formData.phoneNumber}
+                onChange={(e) => updateFormData('phoneNumber', e.target.value)}
+                className="mt-2 text-lg py-3"
+                type="tel"
+              />
             </div>
           </div>
         );
 
       case 7:
         return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Facebook className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Connect Your Social Media</h2>
-              <p className="text-gray-600">Link your social accounts to boost engagement</p>
+          <div className="text-center space-y-6">
+            <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-900">Setup Complete!</h3>
+              <p className="text-gray-600 mt-2 text-lg">
+                Welcome to LOYO! Your loyalty platform is ready to go.
+              </p>
             </div>
-            <div className="space-y-4">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Facebook className="h-6 w-6 text-blue-600" />
-                    <div>
-                      <p className="font-medium">Facebook Page</p>
-                      <p className="text-sm text-gray-500">Share loyalty updates</p>
-                    </div>
-                  </div>
-                  <Switch />
-                </div>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Instagram className="h-6 w-6 text-pink-600" />
-                    <div>
-                      <p className="font-medium">Instagram</p>
-                      <p className="text-sm text-gray-500">Post customer rewards</p>
-                    </div>
-                  </div>
-                  <Switch />
-                </div>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Chrome className="h-6 w-6 text-blue-500" />
-                    <div>
-                      <p className="font-medium">Google Reviews</p>
-                      <p className="text-sm text-gray-500">Encourage customer reviews</p>
-                    </div>
-                  </div>
-                  <Switch 
-                    checked={formData.googleReviews}
-                    onCheckedChange={(checked) => setFormData({...formData, googleReviews: checked})}
-                  />
-                </div>
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <MessageSquare className="h-6 w-6 text-orange-500" />
-                    <div>
-                      <p className="font-medium">Yelp</p>
-                      <p className="text-sm text-gray-500">Manage Yelp presence</p>
-                    </div>
-                  </div>
-                  <Switch 
-                    checked={formData.yelp}
-                    onCheckedChange={(checked) => setFormData({...formData, yelp: checked})}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-
-      case 8:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <Clock className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Business Hours</h2>
-              <p className="text-gray-600">Set your operating hours (optional)</p>
-            </div>
-            <div className="space-y-3">
-              {Object.entries(formData.businessHours).map(([day, hours]) => (
-                <div key={day} className="flex items-center space-x-4 p-3 border rounded-lg">
-                  <div className="w-20 text-sm font-medium capitalize">{day}</div>
-                  <div className="flex items-center space-x-2 flex-1">
-                    {hours.closed ? (
-                      <div className="text-gray-500 text-sm">Closed</div>
-                    ) : (
-                      <>
-                        <input
-                          type="time"
-                          value={hours.open}
-                          onChange={(e) => updateBusinessHours(day, 'open', e.target.value)}
-                          className="text-sm border rounded px-2 py-1"
-                        />
-                        <span className="text-sm">to</span>
-                        <input
-                          type="time"
-                          value={hours.close}
-                          onChange={(e) => updateBusinessHours(day, 'close', e.target.value)}
-                          className="text-sm border rounded px-2 py-1"
-                        />
-                      </>
-                    )}
-                  </div>
-                  <Switch
-                    checked={!hours.closed}
-                    onCheckedChange={(checked) => updateBusinessHours(day, 'closed', !checked)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 9:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <BarChart3 className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Analytics & Insights</h2>
-              <p className="text-gray-600">Choose what metrics matter most to your business</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
-                <div className="text-center">
-                  <Users className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                  <h3 className="font-medium">Customer Growth</h3>
-                  <p className="text-sm text-gray-600">Track new vs returning customers</p>
-                </div>
-              </Card>
-              <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
-                <div className="text-center">
-                  <Star className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                  <h3 className="font-medium">Reward Redemption</h3>
-                  <p className="text-sm text-gray-600">Monitor reward usage patterns</p>
-                </div>
-              </Card>
-              <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
-                <div className="text-center">
-                  <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <h3 className="font-medium">Revenue Impact</h3>
-                  <p className="text-sm text-gray-600">See loyalty program ROI</p>
-                </div>
-              </Card>
-              <Card className="p-4 cursor-pointer hover:shadow-md transition-shadow">
-                <div className="text-center">
-                  <BarChart3 className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                  <h3 className="font-medium">Engagement Metrics</h3>
-                  <p className="text-sm text-gray-600">Track customer interactions</p>
-                </div>
-              </Card>
-            </div>
-          </div>
-        );
-
-      case 10:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold mb-2">Welcome to LOYO!</h2>
-              <p className="text-gray-600 mb-6">Your loyalty program is ready to launch</p>
-              
-              <div className="bg-blue-50 rounded-lg p-6 mb-6">
-                <h3 className="font-semibold text-blue-900 mb-4">What's Next?</h3>
-                <div className="space-y-3 text-left">
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-blue-800">Generate your first QR codes</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-blue-800">Print and display at your business</span>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="text-blue-800">Watch customers start earning rewards</span>
-                  </div>
-                </div>
-              </div>
-              
-              <Badge className="bg-green-100 text-green-700 mb-4">
-                ✨ 14-Day Premium Trial Active
-              </Badge>
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <p className="text-blue-800 font-medium">🎉 Your 14-day Premium trial has started!</p>
+              <p className="text-blue-600 text-sm mt-1">
+                Explore advanced analytics and unlimited campaigns
+              </p>
             </div>
           </div>
         );
@@ -500,41 +233,74 @@ const OnboardingPage = () => {
     }
   };
 
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1: return formData.businessName.trim() !== '';
+      case 2: return formData.businessType !== '';
+      case 3: return true; // Optional step
+      case 4: return formData.businessAddress.trim() !== '';
+      case 5: return formData.ownerName.trim() !== '';
+      case 6: return formData.phoneNumber.trim() !== '';
+      case 7: return true;
+      default: return false;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
       <div className="max-w-2xl mx-auto px-4">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-900">Setup Your Loyalty Program</h1>
-            <Badge variant="outline">{currentStep} of {totalSteps}</Badge>
+        {/* Progress Header */}
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-xl">
+              <CheckCircle className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              LOYO
+            </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Set Up Your Business Profile</h1>
+          <p className="text-gray-600">Step {currentStep} of {totalSteps}</p>
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+              className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
-            />
+            ></div>
           </div>
         </div>
 
-        <Card className="p-6">
-          {renderStep()}
-          
-          <Separator className="my-6" />
-          
-          <div className="flex justify-between">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevious} 
-              disabled={currentStep === 1}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Previous
-            </Button>
-            <Button onClick={handleNext}>
-              {currentStep === totalSteps ? 'Complete Setup' : 'Next'}
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
+        <Card className="shadow-lg border-0">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-lg text-gray-700">
+              {steps[currentStep - 1]}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            {renderStepContent()}
+            
+            <div className="flex justify-between mt-8 pt-6 border-t">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              
+              <Button
+                onClick={nextStep}
+                disabled={!canProceed()}
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              >
+                {currentStep === totalSteps ? 'Go to Dashboard' : 'Next'}
+                {currentStep !== totalSteps && <ArrowRight className="h-4 w-4" />}
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>

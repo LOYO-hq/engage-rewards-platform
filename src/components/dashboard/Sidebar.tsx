@@ -6,8 +6,7 @@ import {
   Star, 
   Info,
   Settings,
-  Plus,
-  Heart
+  Plus
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -25,21 +24,15 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
   ];
 
   return (
-    <div className="h-full bg-white shadow-lg border-r border-gray-200">
+    <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform lg:translate-x-0 lg:static lg:inset-0">
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-xl">
-              <Heart className="h-6 w-6 text-white" />
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              LOYO
-            </span>
-          </div>
+        <div className="flex items-center justify-center h-16 px-4 border-b">
+          <QrCode className="h-8 w-8 text-primary mr-2" />
+          <span className="text-xl font-bold">LoyaltyPro</span>
         </div>
         
         <div className="flex-1 px-4 py-6">
-          <Button className="w-full mb-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700" size="sm">
+          <Button className="w-full mb-6" size="sm">
             <Plus className="h-4 w-4 mr-2" />
             Quick Action
           </Button>
