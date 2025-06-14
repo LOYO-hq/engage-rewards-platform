@@ -1,12 +1,15 @@
 
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap, Gift, BarChart3, Smartphone, Target, Sparkles, Banknote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const LandingPage = () => {
   const navigate = useNavigate();
+  const [isAnnual, setIsAnnual] = useState(false);
 
   const plans = [
     {
@@ -232,9 +235,16 @@ export const LandingPage = () => {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-600 mb-8">
             Start free, scale as you grow. No hidden fees, cancel anytime.
           </p>
+          
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className={`text-lg ${!isAnnual ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>Monthly</span>
+            <Switch checked={isAnnual} onCheckedChange={setIsAnnual} />
+            <span className={`text-lg ${isAnnual ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>Annual</span>
+            <Badge className="bg-green-100 text-green-700 ml-2">Save 20% with Annual Payment</Badge>
+          </div>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
@@ -250,25 +260,35 @@ export const LandingPage = () => {
                 </div>
               )}
               {plan.trial && (
-                <div className="absolute -top-2 right-4">
-                  <div className="bg-green-500 text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg">
-                    ✨ 14-Day Free Trial
+                <div className="absolute -top-3 right-4">
+                  <div className="bg-green-500 text-white w-20 h-20 rounded-full flex items-center justify-center text-xs font-medium shadow-lg">
+                    14-Day Free Trial
                   </div>
                 </div>
               )}
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
                 <div className="space-y-2">
-                  <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                    {plan.price}
-                    {plan.price !== 'Contact Sales' && <span className="text-lg text-gray-500">/month</span>}
-                  </div>
-                  {plan.annualPrice && (
-                    <div className="text-sm text-green-600">
-                      <Badge className="bg-green-100 text-green-700">
-                        Save 20%: ${plan.annualPrice}/month annually
-                      </Badge>
+                  {plan.price === 'Contact Sales' ? (
+                    <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                      Contact Sales
                     </div>
+                  ) : (
+                    <>
+                      {isAnnual && plan.annualPrice ? (
+                        <div className="space-y-1">
+                          <div className="text-lg text-gray-400 line-through">{plan.price}/month</div>
+                          <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                            {plan.annualPrice}<span className="text-lg text-gray-500">/month</span>
+                          </div>
+                          <div className="text-sm text-gray-500">billed annually</div>
+                        </div>
+                      ) : (
+                        <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                          {plan.price}<span className="text-lg text-gray-500">/month</span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
                 <CardDescription className="text-gray-600">{plan.description}</CardDescription>
