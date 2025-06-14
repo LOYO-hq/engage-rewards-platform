@@ -1,13 +1,31 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, QrCode, Star, Users } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, QrCode, Star, Users, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { AdvancedAnalytics } from '../analytics/AdvancedAnalytics';
 
 export const OverviewTab = () => {
+  const { user } = useAuth();
+  const isPremium = user?.subscriptionTier === 'premium' || user?.subscriptionTier === 'enterprise';
+
+  if (isPremium) {
+    return <AdvancedAnalytics />;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
+        <div>
+          <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="outline" className="text-gray-600">Basic Plan</Badge>
+            <Button variant="link" className="text-blue-600 p-0 h-auto">
+              Upgrade to Premium for Advanced Analytics
+            </Button>
+          </div>
+        </div>
         <div className="flex space-x-3">
           <Button variant="outline">
             <QrCode className="h-4 w-4 mr-2" />
@@ -87,6 +105,25 @@ export const OverviewTab = () => {
             <div>
               <div className="text-2xl font-bold text-purple-600">$48</div>
               <p className="text-sm text-gray-600">Avg Customer Value</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Upgrade Prompt */}
+      <Card className="border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-blue-900">Unlock Advanced Analytics</h3>
+              <p className="text-blue-700 mt-1">Get deep insights into customer behavior, ROI tracking, and AI-powered recommendations.</p>
+              <Badge className="mt-2 bg-green-500 text-white">14-Day Free Trial</Badge>
+            </div>
+            <div className="flex items-center">
+              <TrendingUp className="h-12 w-12 text-blue-600 mr-4" />
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Start Free Trial
+              </Button>
             </div>
           </div>
         </CardContent>
