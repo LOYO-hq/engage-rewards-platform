@@ -1,26 +1,42 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { CheckCircle, ArrowLeft, ArrowRight, Upload, RotateCw, Move, Crop } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const { user, updateUser } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 7;
+  const totalSteps = 10;
   const [formData, setFormData] = useState({
-    businessName: '',
+    businessName: user?.businessName || '',
     businessType: '',
     businessDescription: '',
     businessAddress: '',
     ownerName: '',
     phoneNumber: '',
-    showGoogleReviews: false
+    logo: null as File | null,
+    showGoogleReviews: false,
+    facebookPage: '',
+    instagramPage: '',
+    pinterestAccount: '',
+    businessHours: {
+      monday: { open: '09:00', close: '17:00', closed: false },
+      tuesday: { open: '09:00', close: '17:00', closed: false },
+      wednesday: { open: '09:00', close: '17:00', closed: false },
+      thursday: { open: '09:00', close: '17:00', closed: false },
+      friday: { open: '09:00', close: '17:00', closed: false },
+      saturday: { open: '10:00', close: '16:00', closed: true },
+      sunday: { open: '10:00', close: '16:00', closed: true }
+    }
   });
 
   const businessTypes = [
@@ -46,6 +62,9 @@ const OnboardingPage = () => {
     'Business Address',
     'Owner/Contact Name',
     'Phone Number',
+    'Business Logo',
+    'Integrations',
+    'Business Hours',
     'Complete Setup'
   ];
 
@@ -53,7 +72,8 @@ const OnboardingPage = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Complete onboarding and navigate to dashboard
+      // Complete onboarding and update user
+      updateUser({ needsOnboarding: false });
       navigate('/');
     }
   };
@@ -64,8 +84,21 @@ const OnboardingPage = () => {
     }
   };
 
-  const updateFormData = (field: string, value: string | boolean) => {
+  const updateFormData = (field: string, value: string | boolean | File | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const updateBusinessHours = (day: string, field: string, value: string | boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      businessHours: {
+        ...prev.businessHours,
+        [day]: {
+          ...prev.businessHours[day as keyof typeof prev.businessHours],
+          [field]: value
+        }
+      }
+    }));
   };
 
   const renderStepContent = () => {
@@ -211,6 +244,146 @@ const OnboardingPage = () => {
 
       case 7:
         return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Upload your business logo</h3>
+              <p className="text-gray-600 mt-2">Optional - this will appear on your loyalty cards</p>
+            </div>
+            <div className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-center">
+              <Upload className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+              <div className="space-y-4">
+                <Input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={(e) => updateFormData('logo', e.target.files?.[0] || null)}
+                  className="w-full"
+                />
+                {formData.logo && (
+                  <div className="mt-4">
+                    <p className="text-sm text-green-600 mb-2">Logo uploaded: {formData.logo.name}</p>
+                    <div className="flex justify-center gap-2">
+                      <Button variant="outline" size="sm">
+                        <Move className="h-4 w-4 mr-2" />
+                        Resize
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <Crop className="h-4 w-4 mr-2" />
+                        Crop
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        <RotateCw className="h-4 w-4 mr-2" />
+                        Rotate
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 8:
+        return (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Connect your social accounts</h3>
+              <p className="text-gray-600 mt-2">Optional - showcase reviews and social presence</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div>
+                  <Label className="text-base font-medium">Show Google Reviews</Label>
+                  <p className="text-sm text-gray-600">Allow showing reviews on your public LOYO page</p>
+                </div>
+                <Switch 
+                  checked={formData.showGoogleReviews}
+                  onCheckedChange={(checked) => updateFormData('showGoogleReviews', checked)}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="facebookPage" className="text-base">Facebook Page URL</Label>
+                <Input 
+                  id="facebookPage"
+                  placeholder="https://facebook.com/yourbusiness"
+                  value={formData.facebookPage}
+                  onChange={(e) => updateFormData('facebookPage', e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="instagramPage" className="text-base">Instagram Account</Label>
+                <Input 
+                  id="instagramPage"
+                  placeholder="@yourbusiness"
+                  value={formData.instagramPage}
+                  onChange={(e) => updateFormData('instagramPage', e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="pinterestAccount" className="text-base">Pinterest Account</Label>
+                <Input 
+                  id="pinterestAccount"
+                  placeholder="@yourbusiness"
+                  value={formData.pinterestAccount}
+                  onChange={(e) => updateFormData('pinterestAccount', e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+            </div>
+          </div>
+        );
+
+      case 9:
+        return (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold">Business Hours</h3>
+              <p className="text-gray-600 mt-2">Optional - let customers know when you're open</p>
+            </div>
+            
+            <div className="space-y-3">
+              {Object.entries(formData.businessHours).map(([day, hours]) => (
+                <div key={day} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Switch 
+                      checked={!hours.closed}
+                      onCheckedChange={(checked) => updateBusinessHours(day, 'closed', !checked)}
+                    />
+                    <Label className="text-base font-medium capitalize">{day}</Label>
+                  </div>
+                  
+                  {!hours.closed ? (
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        type="time"
+                        value={hours.open}
+                        onChange={(e) => updateBusinessHours(day, 'open', e.target.value)}
+                        className="w-24"
+                      />
+                      <span>to</span>
+                      <Input 
+                        type="time"
+                        value={hours.close}
+                        onChange={(e) => updateBusinessHours(day, 'close', e.target.value)}
+                        className="w-24"
+                      />
+                    </div>
+                  ) : (
+                    <span className="text-gray-500">Closed</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 10:
+        return (
           <div className="text-center space-y-6">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
             <div>
@@ -241,7 +414,10 @@ const OnboardingPage = () => {
       case 4: return formData.businessAddress.trim() !== '';
       case 5: return formData.ownerName.trim() !== '';
       case 6: return formData.phoneNumber.trim() !== '';
-      case 7: return true;
+      case 7: return true; // Optional step
+      case 8: return true; // Optional step
+      case 9: return true; // Optional step
+      case 10: return true;
       default: return false;
     }
   };

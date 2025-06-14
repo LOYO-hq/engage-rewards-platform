@@ -24,6 +24,9 @@ const Index = () => {
   }
 
   if (user) {
+    if (user.needsOnboarding) {
+      return <Navigate to="/onboarding" />;
+    }
     return <Dashboard />;
   }
 

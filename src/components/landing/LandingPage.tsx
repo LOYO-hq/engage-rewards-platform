@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap } from 'lucide-react';
+import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap, Gift, BarChart3, Smartphone, Target, Sparkles, Banknote } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const LandingPage = () => {
@@ -12,6 +12,7 @@ export const LandingPage = () => {
     {
       name: 'Basic',
       price: '$29',
+      annualPrice: '$23.20',
       description: 'Perfect for small businesses starting their loyalty journey',
       features: [
         '1 Active Campaign',
@@ -24,6 +25,7 @@ export const LandingPage = () => {
     {
       name: 'Premium',
       price: '$59',
+      annualPrice: '$47.20',
       description: 'Everything you need to scale your loyalty program',
       features: [
         'Unlimited Campaigns',
@@ -41,7 +43,7 @@ export const LandingPage = () => {
     },
     {
       name: 'Enterprise',
-      price: 'Custom',
+      price: 'Contact Sales',
       description: 'Advanced features for multi-location businesses',
       features: [
         'Everything Premium',
@@ -52,6 +54,45 @@ export const LandingPage = () => {
         'API Access',
         'Enterprise Security'
       ]
+    }
+  ];
+
+  const features = [
+    {
+      icon: QrCode,
+      title: 'Beautiful Digital Cards',
+      subtitle: 'No more lost cards',
+      description: 'Ditch the paper! Create stunning, branded digital stamp cards that customers actually want to keep and use.'
+    },
+    {
+      icon: Smartphone,
+      title: 'Instant QR Magic',
+      subtitle: '2-second experience',
+      description: 'One scan, one stamp. The fastest loyalty system ever created. No apps to download, no passwords to remember.'
+    },
+    {
+      icon: BarChart3,
+      title: 'Smart Business Intelligence',
+      subtitle: 'Know your customers',
+      description: 'See exactly who your best customers are, when they visit, and what drives them to return. Make data-driven decisions.'
+    },
+    {
+      icon: Gift,
+      title: 'Targeted Promotions',
+      subtitle: 'Perfect timing',
+      description: 'Send the right offer to the right customer at the perfect moment. Birthday specials, happy hours, new product launches.'
+    },
+    {
+      icon: Banknote,
+      title: 'Revenue Growth',
+      subtitle: 'Proven results',
+      description: 'Turn one-time visitors into regulars. Increase visit frequency by 40% and average spend by 25% with proven loyalty tactics.'
+    },
+    {
+      icon: Sparkles,
+      title: 'Set & Forget Automation',
+      subtitle: 'Zero maintenance',
+      description: 'Once set up, LOYO runs itself. Automatic rewards, smart reminders, and seamless customer experiences.'
     }
   ];
 
@@ -69,9 +110,14 @@ export const LandingPage = () => {
                 LOYO
               </span>
             </div>
-            <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
-              Get Started Free
-            </Button>
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+              <a href="#pricing" className="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a>
+              <a href="#support" className="text-gray-600 hover:text-blue-600 transition-colors">Support</a>
+              <Button onClick={() => navigate('/auth')} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+                Get Started Free
+              </Button>
+            </nav>
           </div>
         </div>
       </header>
@@ -80,40 +126,52 @@ export const LandingPage = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
           <Badge className="mb-6 bg-blue-100 text-blue-700 hover:bg-blue-100">
-            🎉 14-Day Free Premium Trial - No Credit Card Required
+            🚀 DIGITAL LOYALTY MADE SIMPLE
           </Badge>
-          <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Turn Every Customer Into a 
-            <span className="block bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              Loyal Advocate
+          <h1 className="text-5xl font-bold text-white mb-6 leading-tight">
+            Turn First-Time Visitors<br />
+            <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
+              Into Lifelong Customers
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Build irresistible loyalty programs that keep customers coming back for more. 
-            Smart QR codes, powerful analytics, and automated rewards that drive real revenue growth.
+          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Skip the paper punch cards. Create stunning digital loyalty programs that customers
+            actually want to use.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <p className="text-2xl font-semibold text-yellow-400 mb-8">
+            Watch your repeat sales soar.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button 
               size="lg" 
               onClick={() => navigate('/auth')}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-lg px-8 py-3"
+              className="bg-yellow-500 hover:bg-yellow-600 text-black text-lg px-8 py-3 font-semibold"
             >
-              <Zap className="h-5 w-5 mr-2" />
-              Start Your Free Trial
+              Start Free 7-Day Trial →
             </Button>
-            <Button variant="outline" size="lg" className="border-blue-200 text-blue-700 hover:bg-blue-50">
-              <QrCode className="h-5 w-5 mr-2" />
-              Watch Demo
+            <Button variant="outline" size="lg" className="border-blue-200 text-blue-100 hover:bg-blue-50/10">
+              See How It Works ↓
             </Button>
           </div>
-          <p className="text-sm text-gray-500 mt-4">
-            Join 2,500+ businesses already growing with LOYO
-          </p>
+          <div className="flex justify-center gap-8 text-blue-200">
+            <div className="flex items-center gap-2">
+              <QrCode className="h-5 w-5" />
+              <span>Quick Setup</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5" />
+              <span>QR Code Magic</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              <span>Smart Analytics</span>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Everything You Need to Build Loyalty
@@ -123,67 +181,53 @@ export const LandingPage = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
-            <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
-                <QrCode className="h-8 w-8 text-blue-600" />
-              </div>
-              <CardTitle className="text-xl">Smart QR Loyalty Cards</CardTitle>
-              <CardDescription className="text-gray-600">
-                Dynamic QR codes that work like magic. Customers scan to earn points, 
-                redeem rewards, and join exclusive promotions instantly.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
-            <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
-              </div>
-              <CardTitle className="text-xl">Advanced Analytics</CardTitle>
-              <CardDescription className="text-gray-600">
-                Deep insights into customer behavior, visit patterns, and ROI tracking. 
-                Know exactly what drives loyalty and revenue.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          
-          <Card className="border-blue-100 hover:shadow-lg transition-all duration-300">
-            <CardHeader>
-              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit">
-                <Star className="h-8 w-8 text-blue-600" />
-              </div>
-              <CardTitle className="text-xl">Automated Campaigns</CardTitle>
-              <CardDescription className="text-gray-600">
-                Set up double points days, birthday rewards, and win-back campaigns 
-                that run on autopilot while you focus on your business.
-              </CardDescription>
-            </CardHeader>
-          </Card>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature) => (
+            <Card key={feature.title} className="border-blue-100 hover:shadow-lg transition-all duration-300 bg-white">
+              <CardHeader>
+                <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl w-fit mb-4">
+                  <feature.icon className="h-8 w-8 text-blue-600" />
+                </div>
+                <div className="space-y-2">
+                  <Badge className="bg-yellow-100 text-yellow-700 text-xs">{feature.subtitle}</Badge>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </div>
+                <CardDescription className="text-gray-600">
+                  {feature.description}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
       </section>
 
-      {/* Social Proof */}
+      {/* Value Proposition */}
       <section className="bg-white/50 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-8">
-              Trusted by businesses everywhere
+            <h3 className="text-3xl font-bold text-gray-900 mb-8">
+              Why Digital Loyalty Programs Work Better
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60">
-              <div className="text-lg font-medium">☕ Coffee Shops</div>
-              <div className="text-lg font-medium">🍕 Restaurants</div>
-              <div className="text-lg font-medium">💇 Salons</div>
-              <div className="text-lg font-medium">🛠️ Auto Shops</div>
+            <div className="grid md:grid-cols-3 gap-8 items-center">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-blue-600 mb-2">40%</div>
+                <p className="text-gray-600">Increase in visit frequency</p>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-green-600 mb-2">25%</div>
+                <p className="text-gray-600">Higher average spend</p>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-purple-600 mb-2">94%</div>
+                <p className="text-gray-600">Customer retention rate</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
@@ -206,17 +250,26 @@ export const LandingPage = () => {
                 </div>
               )}
               {plan.trial && (
-                <div className="absolute -top-4 right-4">
-                  <Badge className="bg-green-500 text-white px-3 py-1 text-sm font-medium">
-                    14-Day Free Trial
-                  </Badge>
+                <div className="absolute -top-2 right-4">
+                  <div className="bg-green-500 text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg">
+                    ✨ 14-Day Free Trial
+                  </div>
                 </div>
               )}
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                  {plan.price}
-                  {plan.price !== 'Custom' && <span className="text-lg text-gray-500">/month</span>}
+                <div className="space-y-2">
+                  <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                    {plan.price}
+                    {plan.price !== 'Contact Sales' && <span className="text-lg text-gray-500">/month</span>}
+                  </div>
+                  {plan.annualPrice && (
+                    <div className="text-sm text-green-600">
+                      <Badge className="bg-green-100 text-green-700">
+                        Save 20%: ${plan.annualPrice}/month annually
+                      </Badge>
+                    </div>
+                  )}
                 </div>
                 <CardDescription className="text-gray-600">{plan.description}</CardDescription>
               </CardHeader>
@@ -239,7 +292,7 @@ export const LandingPage = () => {
                   }`}
                   onClick={() => navigate('/auth')}
                 >
-                  {plan.trial ? 'Start Free Trial' : `Get ${plan.name}`}
+                  {plan.name === 'Enterprise' ? 'Contact Sales' : (plan.trial ? 'Start Free Trial' : `Get ${plan.name}`)}
                 </Button>
               </CardContent>
             </Card>
@@ -248,17 +301,61 @@ export const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
+      <footer id="support" className="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex items-center justify-center space-x-3">
-            <div className="bg-white/10 p-2 rounded-xl">
-              <Heart className="h-6 w-6" />
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="bg-white/10 p-2 rounded-xl">
+                  <Heart className="h-6 w-6" />
+                </div>
+                <span className="text-2xl font-bold">LOYO</span>
+              </div>
+              <p className="text-blue-200 mb-4">
+                Transform your business with digital loyalty programs that customers actually love to use.
+              </p>
+              <div className="text-sm text-blue-300">
+                <p>Privacy | Terms</p>
+              </div>
             </div>
-            <span className="text-2xl font-bold">LOYO</span>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <ul className="space-y-2 text-blue-200">
+                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Free Trial</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API Docs</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-blue-200">
+                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-blue-200">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Tutorials</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Status</a></li>
+              </ul>
+            </div>
           </div>
-          <p className="text-center text-blue-200 mt-4">
-            © 2024 LOYO. All rights reserved. Built with ❤️ for business owners.
-          </p>
+          
+          <div className="border-t border-blue-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-blue-200">© 2025 LOYO. All rights reserved.</p>
+            <Button className="bg-yellow-500 hover:bg-yellow-600 text-black mt-4 md:mt-0">
+              Start Free Trial
+            </Button>
+          </div>
         </div>
       </footer>
     </div>
