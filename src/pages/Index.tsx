@@ -1,14 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { LandingPage } from '@/components/landing/LandingPage';
+import { Dashboard } from '@/components/dashboard/Dashboard';
 
 const Index = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const { user, isLoading } = useAuth();
+  const [showLanding, setShowLanding] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      setShowLanding(false);
+    }
+  }, [user]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (user) {
+    return <Dashboard />;
+  }
+
+  return showLanding ? <LandingPage /> : <Navigate to="/auth" />;
 };
 
 export default Index;
