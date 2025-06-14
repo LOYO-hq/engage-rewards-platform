@@ -55,15 +55,6 @@ export const AdvancedAnalytics = () => {
     { interval: '30+ days', customers: 25 }
   ];
 
-  const heatmapData = [
-    { day: 'Mon', hour: '9', visits: 12 },
-    { day: 'Mon', hour: '12', visits: 25 },
-    { day: 'Mon', hour: '18', visits: 35 },
-    { day: 'Tue', hour: '9', visits: 15 },
-    { day: 'Tue', hour: '12', visits: 28 },
-    { day: 'Tue', hour: '18', visits: 42 }
-  ];
-
   const topCustomers = [
     { name: 'Sarah Johnson', visits: 24, avatar: '👩' },
     { name: 'Mike Chen', visits: 19, avatar: '👨' },
@@ -377,7 +368,7 @@ export const AdvancedAnalytics = () => {
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-green-600">57%</div>
-                    <p className="text-sm text-gray-600">Active (< 15 days)</p>
+                    <p className="text-sm text-gray-600">Active (&lt; 15 days)</p>
                   </div>
                 </div>
               </CardContent>
