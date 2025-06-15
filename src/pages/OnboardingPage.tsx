@@ -1,35 +1,55 @@
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle, ArrowLeft, ArrowRight, Building2 } from 'lucide-react';
+import { CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BusinessInfoStep } from '@/components/onboarding/BusinessInfoStep';
+import { OwnerContactStep } from '@/components/onboarding/OwnerContactStep';
+import { IntegrationsStep } from '@/components/onboarding/IntegrationsStep';
+import { PaymentStep } from '@/components/onboarding/PaymentStep';
+import { WelcomeStep } from '@/components/onboarding/WelcomeStep';
+import { useAuth } from '@/contexts/AuthContext';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 5;
+  
   const [formData, setFormData] = useState({
     businessName: '',
     businessType: '',
-    businessDescription: ''
+    businessAddress: '',
+    businessDescription: '',
+    logo: null,
+    ownerName: '',
+    contactPhone: '',
+    additionalUsers: [],
+    googleReviews: false,
+    facebookPage: '',
+    instagramAccount: '',
+    pinterestAccount: '',
+    businessHours: false,
+    paymentMethod: null,
+    usedFreeTrial: user?.subscriptionStatus === 'trial'
   });
 
-  const businessTypes = [
-    { value: 'cafe', label: 'Coffee Shop, Cafe', emoji: '☕' },
-    { value: 'restaurant', label: 'Restaurant, Retail Store', emoji: '🍽️' },
-    { value: 'hair_salon', label: 'Hair Salon', emoji: '💇' },
-    { value: 'barber', label: 'Barber Shop', emoji: '✂️' },
-    { value: 'mechanic', label: 'Auto Repair, Mechanic', emoji: '🔧' },
-    { value: 'other', label: 'Other', emoji: '📋' }
+  const stepTitles = [
+    'Business Information',
+    'Owner & Contact Details', 
+    'Integrations',
+    'Payment Details',
+    'Welcome!'
   ];
 
+  const shouldSkipPayment = formData.usedFreeTrial || user?.subscriptionTier === 'basic';
+
   const nextStep = () => {
-    if (currentStep < totalSteps) {
+    if (currentStep === 3 && shouldSkipPayment) {
+      // Skip payment step if on free trial or basic plan
+      setCurrentStep(5);
+    } else if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
       // Complete onboarding and navigate to dashboard
@@ -38,109 +58,54 @@ const OnboardingPage = () => {
   };
 
   const prevStep = () => {
-    if (currentStep > 1) {
+    if (currentStep === 5 && shouldSkipPayment) {
+      // Skip back over payment step
+      setCurrentStep(3);
+    } else if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  const updateFormData = (field: string, value: string) => {
+  const updateFormData = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1: return formData.businessName.trim() !== '' && formData.businessType !== '';
+      case 2: return formData.ownerName.trim() !== '' && formData.contactPhone.trim() !== '';
+      case 3: return true; // Integrations are optional
+      case 4: return shouldSkipPayment || formData.paymentMethod !== null;
+      case 5: return true;
+      default: return false;
+    }
   };
 
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="bg-blue-50 p-4 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <Building2 className="h-10 w-10 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-semibold text-gray-900">Tell us about your business</h3>
-              <p className="text-gray-600 mt-2">Let's start with the basics</p>
-            </div>
-            <div>
-              <Label htmlFor="businessName" className="text-base font-medium">Business Name</Label>
-              <Input 
-                id="businessName" 
-                placeholder="West Avenue Cafe"
-                value={formData.businessName}
-                onChange={(e) => updateFormData('businessName', e.target.value)}
-                className="mt-2 text-base py-3"
-                autoFocus
-              />
-            </div>
-            <div>
-              <Label htmlFor="businessType" className="text-base font-medium">Business Type</Label>
-              <Input 
-                id="businessType"
-                placeholder="e.g. Coffee Shop, Restaurant, Retail Store"
-                value={formData.businessType}
-                onChange={(e) => updateFormData('businessType', e.target.value)}
-                className="mt-2 text-base py-3"
-              />
-            </div>
-          </div>
-        );
-
+        return <BusinessInfoStep formData={formData} updateFormData={updateFormData} />;
       case 2:
-        return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="bg-blue-50 p-4 rounded-2xl w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="h-10 w-10 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-semibold text-gray-900">Tell us more about your business</h3>
-              <p className="text-gray-600 mt-2">Help us customize your experience</p>
-            </div>
-            <div>
-              <Label htmlFor="businessDescription" className="text-base font-medium">Business Description (Optional)</Label>
-              <Textarea 
-                id="businessDescription"
-                placeholder="Describe what makes your business special..."
-                value={formData.businessDescription}
-                onChange={(e) => updateFormData('businessDescription', e.target.value)}
-                className="mt-2 text-base min-h-[120px]"
-                rows={5}
-              />
-              <p className="text-sm text-gray-500 mt-2">This will help us suggest the best loyalty program features for you.</p>
-            </div>
-          </div>
-        );
-
+        return <OwnerContactStep formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return (
-          <div className="text-center space-y-6">
-            <div className="bg-green-50 p-6 rounded-2xl w-24 h-24 flex items-center justify-center mx-auto">
-              <CheckCircle className="h-12 w-12 text-green-600" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-semibold text-gray-900">Setup Complete!</h3>
-              <p className="text-gray-600 mt-2 text-lg">
-                Welcome to LOYO! Your loyalty platform is ready to go.
-              </p>
-            </div>
-            <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
-              <p className="text-blue-800 font-medium">🎉 Your 14-day Premium trial has started!</p>
-              <p className="text-blue-600 text-sm mt-1">
-                Explore advanced analytics and unlimited campaigns
-              </p>
-            </div>
-          </div>
-        );
-
+        return <IntegrationsStep formData={formData} updateFormData={updateFormData} />;
+      case 4:
+        return <PaymentStep formData={formData} updateFormData={updateFormData} />;
+      case 5:
+        return <WelcomeStep businessName={formData.businessName} />;
       default:
         return null;
     }
   };
 
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1: return formData.businessName.trim() !== '' && formData.businessType.trim() !== '';
-      case 2: return true; // Optional step
-      case 3: return true;
-      default: return false;
-    }
+  const getDisplayStep = () => {
+    if (shouldSkipPayment && currentStep === 5) return 4;
+    if (shouldSkipPayment && currentStep > 3) return currentStep - 1;
+    return currentStep;
+  };
+
+  const getDisplayTotal = () => {
+    return shouldSkipPayment ? totalSteps - 1 : totalSteps;
   };
 
   return (
@@ -152,18 +117,16 @@ const OnboardingPage = () => {
             <div className="bg-blue-600 p-2 rounded-xl">
               <CheckCircle className="h-6 w-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">
-              LOYO
-            </span>
+            <span className="text-2xl font-bold text-gray-900">LOYO</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Set Up Your Business Profile</h1>
-          <p className="text-gray-600">Step {currentStep} of {totalSteps}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{stepTitles[currentStep - 1]}</h1>
+          <p className="text-gray-600">Step {getDisplayStep()} of {getDisplayTotal()}</p>
           
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+              style={{ width: `${(getDisplayStep() / getDisplayTotal()) * 100}%` }}
             ></div>
           </div>
         </div>

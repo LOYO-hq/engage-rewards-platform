@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 
 const AuthPage = () => {
@@ -34,10 +35,21 @@ const AuthPage = () => {
     }
   };
 
+  const handleGoogleAuth = () => {
+    // Simulate Google authentication
+    toast.info('Google authentication would be implemented here');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="bg-blue-600 p-2 rounded-xl">
+              <div className="h-6 w-6 bg-white rounded-sm"></div>
+            </div>
+            <span className="text-2xl font-bold text-gray-900">LOYO</span>
+          </div>
           <CardTitle className="text-2xl font-bold text-center">
             {isSignUp ? 'Create Account' : 'Welcome Back'}
           </CardTitle>
@@ -48,7 +60,27 @@ const AuthPage = () => {
             }
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Google Authentication Button */}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleGoogleAuth}
+            className="w-full flex items-center gap-2"
+          >
+            <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-red-500 rounded-sm flex items-center justify-center text-white text-xs font-bold">
+              G
+            </div>
+            {isSignUp ? 'Sign up with Google' : 'Sign in with Google'}
+          </Button>
+
+          <div className="relative">
+            <Separator />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="bg-white px-2 text-sm text-gray-500">or</span>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
