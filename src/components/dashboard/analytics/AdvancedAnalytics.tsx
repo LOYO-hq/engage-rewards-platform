@@ -82,7 +82,6 @@ export const AdvancedAnalytics = () => {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -165,7 +164,6 @@ export const AdvancedAnalytics = () => {
             </Card>
           </div>
 
-          {/* Customer Visits Chart */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -197,7 +195,6 @@ export const AdvancedAnalytics = () => {
             </CardContent>
           </Card>
 
-          {/* Repeat Visit Rate */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
@@ -268,7 +265,6 @@ export const AdvancedAnalytics = () => {
         </TabsContent>
 
         <TabsContent value="behavior" className="space-y-6">
-          {/* Top Customers & QR Engagement */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
@@ -341,7 +337,6 @@ export const AdvancedAnalytics = () => {
             </Card>
           </div>
 
-          {/* Churn Risk */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -368,7 +363,7 @@ export const AdvancedAnalytics = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-600">57%</div>
-                  <p className="text-sm text-gray-600">Active (< 15 days)</p>
+                  <p className="text-sm text-gray-600">Active (&lt; 15 days)</p>
                 </div>
               </div>
             </CardContent>
@@ -376,7 +371,6 @@ export const AdvancedAnalytics = () => {
         </TabsContent>
 
         <TabsContent value="insights" className="space-y-6">
-          {/* ROI & Insights */}
           <div className="grid md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
@@ -432,7 +426,6 @@ export const AdvancedAnalytics = () => {
             </Card>
           </div>
 
-          {/* Customer Growth */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
