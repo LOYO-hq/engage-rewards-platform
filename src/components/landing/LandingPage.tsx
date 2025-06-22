@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap } from 'lucide-react';
+import { Check, QrCode, Users, Star, TrendingUp, Heart, Zap, Gift, BarChart2, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -73,6 +73,17 @@ export const LandingPage = () => {
                 LOYO
               </span>
             </div>
+            
+            {/* Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium">Features</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 font-medium">Pricing</a>
+              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 font-medium">How it works</a>
+              <Button variant="ghost" onClick={() => navigate('/auth')} className="text-gray-600 hover:text-gray-900">
+                Log in
+              </Button>
+            </nav>
+            
             <Button onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
               Get Started Free
             </Button>
@@ -84,17 +95,18 @@ export const LandingPage = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-gray-50">
         <div className="text-center">
           <Badge className="mb-6 bg-blue-50 text-blue-600 hover:bg-blue-50 border-blue-200">
-            🎉 14-Day Free Premium Trial - No Credit Card Required
+            🚀 DIGITAL LOYALTY MADE SIMPLE
           </Badge>
           <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Turn Every Customer Into a 
+            Turn First-Time Visitors
             <span className="block text-blue-600">
-              Loyal Advocate
+              Into Lifelong Customers
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Build irresistible loyalty programs that keep customers coming back for more. 
-            Smart QR codes, powerful analytics, and automated rewards that drive real revenue growth.
+          <p className="text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+            <span className="text-gray-600">Skip the paper punch cards. Create stunning digital loyalty programs that customers actually want to use.</span>
+            <br />
+            <span className="text-blue-600 font-medium">Watch your repeat sales soar.</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -117,7 +129,7 @@ export const LandingPage = () => {
       </section>
 
       {/* Features */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
+      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Everything You Need to Build Loyalty
@@ -127,16 +139,33 @@ export const LandingPage = () => {
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader>
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
+                <Star className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                No more lost cards
+              </div>
+              <CardTitle className="text-xl text-gray-900">Beautiful Digital Cards</CardTitle>
+              <CardDescription className="text-gray-600">
+                Ditch the paper! Create stunning, branded digital stamp cards that customers actually want to keep and use.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          
           <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
             <CardHeader>
               <div className="bg-blue-50 p-3 rounded-xl w-fit">
                 <QrCode className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl text-gray-900">Smart QR Loyalty Cards</CardTitle>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                2-second experience
+              </div>
+              <CardTitle className="text-xl text-gray-900">Instant QR Magic</CardTitle>
               <CardDescription className="text-gray-600">
-                Dynamic QR codes that work like magic. Customers scan to earn points, 
-                redeem rewards, and join exclusive promotions instantly.
+                One scan, one stamp. The fastest loyalty system ever created. No apps to download, no passwords to remember.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -146,10 +175,29 @@ export const LandingPage = () => {
               <div className="bg-blue-50 p-3 rounded-xl w-fit">
                 <TrendingUp className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl text-gray-900">Advanced Analytics</CardTitle>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                Know your customers
+              </div>
+              <CardTitle className="text-xl text-gray-900">Smart Business Intelligence</CardTitle>
               <CardDescription className="text-gray-600">
-                Deep insights into customer behavior, visit patterns, and ROI tracking. 
-                Know exactly what drives loyalty and revenue.
+                See exactly who your best customers are, when they visit, and what drives them to return. Make data-driven decisions.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader>
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
+                <Gift className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                Perfect timing
+              </div>
+              <CardTitle className="text-xl text-gray-900">Targeted Promotions</CardTitle>
+              <CardDescription className="text-gray-600">
+                Send the right offer to the right customer at the perfect moment. Birthday specials, happy hours, new product launches.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -157,37 +205,37 @@ export const LandingPage = () => {
           <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
             <CardHeader>
               <div className="bg-blue-50 p-3 rounded-xl w-fit">
-                <Star className="h-8 w-8 text-blue-600" />
+                <BarChart2 className="h-8 w-8 text-blue-600" />
               </div>
-              <CardTitle className="text-xl text-gray-900">Automated Campaigns</CardTitle>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                Proven results
+              </div>
+              <CardTitle className="text-xl text-gray-900">Revenue Growth</CardTitle>
               <CardDescription className="text-gray-600">
-                Set up double points days, birthday rewards, and win-back campaigns 
-                that run on autopilot while you focus on your business.
+                Turn one-time visitors into regulars. Increase visit frequency by 40% and average spend by 25% with proven loyalty tactics.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+          
+          <Card className="border-gray-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader>
+              <div className="bg-blue-50 p-3 rounded-xl w-fit">
+                <Sparkles className="h-8 w-8 text-blue-600" />
+              </div>
+              <div className="bg-yellow-100 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 w-fit mb-2">
+                Zero maintenance
+              </div>
+              <CardTitle className="text-xl text-gray-900">Set & Forget Automation</CardTitle>
+              <CardDescription className="text-gray-600">
+                Once set up, LOYO runs itself. Automatic rewards, smart reminders, and seamless customer experiences.
               </CardDescription>
             </CardHeader>
           </Card>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <h3 className="text-2xl font-semibold text-gray-900 mb-8">
-              Trusted by businesses everywhere
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60">
-              <div className="text-lg font-medium">☕ Coffee Shops</div>
-              <div className="text-lg font-medium">🍕 Restaurants</div>
-              <div className="text-lg font-medium">💇 Salons</div>
-              <div className="text-lg font-medium">🛠️ Auto Shops</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Pricing */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
+      <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 bg-white">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Simple, Transparent Pricing
