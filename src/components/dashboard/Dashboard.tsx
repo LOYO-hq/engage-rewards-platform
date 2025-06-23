@@ -18,15 +18,13 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
-        <div className="flex-1 lg:ml-64">
-          <DashboardHeader user={user || { businessName: '', subscriptionTier: 'basic' }} />
-          <main className="p-0">
-            <DashboardContent activeTab={activeTab} onNavigate={handleNavigate} />
-          </main>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex">
+      <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
+      <div className="flex-1">
+        <DashboardHeader user={user || { businessName: '', subscriptionTier: 'basic' }} />
+        <main>
+          <DashboardContent activeTab={activeTab} onNavigate={handleNavigate} />
+        </main>
       </div>
     </div>
   );

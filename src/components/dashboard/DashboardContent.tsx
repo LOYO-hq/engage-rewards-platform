@@ -27,7 +27,7 @@ export const DashboardContent = ({ activeTab, onNavigate }: DashboardContentProp
     case 'qrcodes':
       return <QRCodesTab />;
     case 'stamp-designer':
-      return <StampCardDesigner />;
+      return <StampCardDesigner onBack={() => onNavigate?.('overview')} />;
     case 'analytics':
       return isPremium ? <AnalyticsTab /> : <OverviewTab onNavigate={onNavigate} />;
     case 'settings':

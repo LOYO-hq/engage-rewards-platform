@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,11 @@ interface StampCardConfig {
   maxStamps: number;
 }
 
-export const StampCardDesigner = () => {
+interface StampCardDesignerProps {
+  onBack?: () => void;
+}
+
+export const StampCardDesigner = ({ onBack }: StampCardDesignerProps) => {
   const [config, setConfig] = useState<StampCardConfig>({
     title: 'Loyalty Card',
     subtitle: 'Collect stamps for rewards',
@@ -130,6 +133,64 @@ export const StampCardDesigner = () => {
     '#3B82F6', '#EF4444', '#10B981', '#F59E0B',
     '#8B5CF6', '#F97316', '#06B6D4', '#84CC16'
   ];
+
+  const templates = [
+    {
+      id: 'modern',
+      name: 'Modern',
+      description: 'Clean and minimalist',
+      config: {
+        backgroundColor: '#3B82F6',
+        textColor: '#FFFFFF',
+        layout: 'grid' as const,
+        orientation: 'vertical' as const
+      }
+    },
+    {
+      id: 'vintage',
+      name: 'Vintage',
+      description: 'Classic retro style',
+      config: {
+        backgroundColor: '#8B5CF6',
+        textColor: '#FFFFFF',
+        layout: 'circular' as const,
+        orientation: 'vertical' as const
+      }
+    },
+    {
+      id: 'playful',
+      name: 'Playful',
+      description: 'Fun and colorful',
+      config: {
+        backgroundColor: '#F59E0B',
+        textColor: '#FFFFFF',
+        layout: 'grid' as const,
+        orientation: 'vertical' as const
+      }
+    },
+    {
+      id: 'elegant',
+      name: 'Elegant',
+      description: 'Sophisticated design',
+      config: {
+        backgroundColor: '#1F2937',
+        textColor: '#FFFFFF',
+        layout: 'linear' as const,
+        orientation: 'horizontal' as const
+      }
+    }
+  ];
+
+  const applyTemplate = (templateId: string) => {
+    const template = templates.find(t => t.id === templateId);
+    if (template) {
+      setConfig(prev => ({
+        ...prev,
+        template: templateId,
+        ...template.config
+      }));
+    }
+  };
 
   const getSelectedIcon = () => {
     const businessIcon = businessIcons.find(i => i.id === config.icon);
@@ -207,6 +268,68 @@ export const StampCardDesigner = () => {
     const cardWidth = config.orientation === 'vertical' ? 'w-80' : 'w-96';
     const cardHeight = config.orientation === 'vertical' ? 'h-96' : 'h-64';
     
+    const getStampGridClass = () => {
+      if (config.layout === 'linear') {
+        return config.orientation === 'vertical' 
+          ? 'flex flex-col gap-2' 
+          : 'flex flex-row gap-2 flex-wrap';
+      }
+      if (config.layout === 'circular') {
+        return 'relative w-full h-20 flex items-center justify-center';
+      }
+      return config.orientation === 'vertical' 
+        ? 'grid grid-cols-5 gap-2' 
+        : 'grid grid-cols-10 gap-2';
+    };
+
+    const renderStamps = () => {
+      if (config.layout === 'circular') {
+        const radius = 30;
+        const centerX = 40;
+        const centerY = 40;
+        return (
+          <div className="relative w-20 h-20 mx-auto">
+            {stamps.map((stamp, index) => {
+              const angle = (index / config.maxStamps) * 2 * Math.PI;
+              const x = centerX + radius * Math.cos(angle - Math.PI / 2);
+              const y = centerY + radius * Math.sin(angle - Math.PI / 2);
+              
+              return (
+                <div
+                  key={index}
+                  className={`absolute w-4 h-4 rounded-full border-2 border-white/50 flex items-center justify-center ${
+                    index < currentStamps 
+                      ? 'bg-white/90 text-black' 
+                      : 'bg-transparent'
+                  }`}
+                  style={{ left: `${x}px`, top: `${y}px`, transform: 'translate(-50%, -50%)' }}
+                >
+                  {index < currentStamps && (
+                    <SelectedIcon className="h-2 w-2" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+
+      return stamps.map((stamp, index) => (
+        <div
+          key={index}
+          className={`w-6 h-6 rounded-full border-2 border-white/50 flex items-center justify-center ${
+            index < currentStamps 
+              ? 'bg-white/90 text-black' 
+              : 'bg-transparent'
+          }`}
+        >
+          {index < currentStamps && (
+            <SelectedIcon className="h-3 w-3" />
+          )}
+        </div>
+      ));
+    };
+    
     return (
       <div 
         className={`${cardWidth} ${cardHeight} rounded-2xl p-6 shadow-2xl relative overflow-hidden`}
@@ -251,27 +374,10 @@ export const StampCardDesigner = () => {
             </div>
           </div>
 
-          {/* Stamps Grid */}
+          {/* Stamps */}
           <div className="mb-4 flex-1">
-            <div className={`grid gap-2 ${
-              config.orientation === 'vertical' 
-                ? config.layout === 'grid' ? 'grid-cols-5' : 'grid-cols-5'
-                : config.layout === 'grid' ? 'grid-cols-10' : 'grid-cols-10'
-            }`}>
-              {stamps.map((stamp, index) => (
-                <div
-                  key={index}
-                  className={`w-6 h-6 rounded-full border-2 border-white/50 flex items-center justify-center ${
-                    index < currentStamps 
-                      ? 'bg-white/90 text-black' 
-                      : 'bg-transparent'
-                  }`}
-                >
-                  {index < currentStamps && (
-                    <SelectedIcon className="h-3 w-3" />
-                  )}
-                </div>
-              ))}
+            <div className={getStampGridClass()}>
+              {renderStamps()}
             </div>
           </div>
 
@@ -298,11 +404,17 @@ export const StampCardDesigner = () => {
     );
   };
 
+  const handleBackToDashboard = () => {
+    if (onBack) {
+      onBack();
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={handleBackToDashboard}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Dashboard
         </Button>
@@ -634,19 +746,16 @@ export const StampCardDesigner = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-4">
-                    {['modern', 'vintage', 'playful', 'elegant'].map((template) => (
+                    {templates.map((template) => (
                       <Button
-                        key={template}
-                        variant={config.template === template ? "default" : "outline"}
+                        key={template.id}
+                        variant={config.template === template.id ? "default" : "outline"}
                         className="h-24 flex-col"
-                        onClick={() => setConfig({ ...config, template: template })}
+                        onClick={() => applyTemplate(template.id)}
                       >
-                        <span className="font-semibold capitalize">{template}</span>
+                        <span className="font-semibold capitalize">{template.name}</span>
                         <span className="text-xs text-muted-foreground">
-                          {template === 'modern' && 'Clean and minimalist'}
-                          {template === 'vintage' && 'Classic retro style'}
-                          {template === 'playful' && 'Fun and colorful'}
-                          {template === 'elegant' && 'Sophisticated design'}
+                          {template.description}
                         </span>
                       </Button>
                     ))}

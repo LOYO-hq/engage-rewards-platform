@@ -1,9 +1,13 @@
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Star, Calendar } from 'lucide-react';
+import { CreateCampaignModal } from '../CreateCampaignModal';
 
 export const CampaignsTab = () => {
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  
   const campaigns = [
     {
       id: 1,
@@ -35,10 +39,10 @@ export const CampaignsTab = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="p-8 space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-gray-900">Campaign Management</h2>
-        <Button>
+        <Button onClick={() => setShowCreateModal(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Create Campaign
         </Button>
@@ -105,6 +109,11 @@ export const CampaignsTab = () => {
           </div>
         </CardContent>
       </Card>
+
+      <CreateCampaignModal 
+        open={showCreateModal} 
+        onOpenChange={setShowCreateModal}
+      />
     </div>
   );
 };
