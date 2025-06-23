@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -56,14 +55,18 @@ const chartConfig = {
   },
 };
 
-export const PremiumOverview = () => {
+interface PremiumOverviewProps {
+  onNavigate?: (tab: string) => void;
+}
+
+export const PremiumOverview = ({ onNavigate }: PremiumOverviewProps) => {
   const quickActions = [
     {
       title: 'Stamp Card QR',
       description: 'Create digital punch cards',
       icon: QrCode,
       color: 'bg-gradient-to-r from-blue-500 to-blue-600',
-      action: 'create-stamp-card'
+      action: 'stamp-designer'
     },
     {
       title: 'Promotion Campaign',
@@ -117,8 +120,14 @@ export const PremiumOverview = () => {
     { month: 'May', impact: 42 }
   ];
 
+  const handleQuickAction = (action: string) => {
+    if (onNavigate) {
+      onNavigate(action);
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 p-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -145,6 +154,7 @@ export const PremiumOverview = () => {
                 key={index}
                 variant="outline"
                 className="h-24 flex-col p-4 border-2 hover:border-blue-300 transition-all duration-200"
+                onClick={() => handleQuickAction(action.action)}
               >
                 <div className={`p-2 rounded-lg ${action.color} mb-2`}>
                   <action.icon className="h-6 w-6 text-white" />

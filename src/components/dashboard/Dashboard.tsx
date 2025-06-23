@@ -1,28 +1,30 @@
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { DashboardHeader } from './DashboardHeader';
-import { DashboardStats } from './DashboardStats';
-import { DashboardContent } from './DashboardContent';
 import { Sidebar } from './Sidebar';
+import { DashboardContent } from './DashboardContent';
+import { DashboardHeader } from './DashboardHeader';
 
 export const Dashboard = () => {
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
-  if (!user) return null;
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
+
+  const handleNavigate = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      
-      <div className="flex-1 lg:ml-64">
-        <DashboardHeader user={user} />
-        
-        <main className="p-6">
-          <DashboardStats />
-          <DashboardContent activeTab={activeTab} />
-        </main>
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex">
+        <Sidebar activeTab={activeTab} onTabChange={handleTabChange} />
+        <div className="flex-1 lg:ml-64">
+          <DashboardHeader />
+          <main className="p-0">
+            <DashboardContent activeTab={activeTab} onNavigate={handleNavigate} />
+          </main>
+        </div>
       </div>
     </div>
   );
