@@ -15,6 +15,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, businessName: string) => Promise<void>;
   signOut: () => void;
+  upgradeToPremium: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,8 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email,
         businessName: 'Demo Business',
-        subscriptionTier: 'basic',
-        subscriptionStatus: 'active'
+        subscriptionTier: 'premium',
+        subscriptionStatus: 'trial'
       };
       
       setUser(mockUser);
@@ -74,7 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         email,
         businessName,
-        subscriptionTier: 'basic',
+        subscriptionTier: 'premium',
         subscriptionStatus: 'trial'
       };
       
@@ -85,13 +86,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const upgradeToPremium = () => {
+    if (user) {
+      const updatedUser = {
+        ...user,
+        subscriptionTier: 'premium' as const,
+        subscriptionStatus: 'active' as const
+      };
+      setUser(updatedUser);
+      localStorage.setItem('loyaltyUser', JSON.stringify(updatedUser));
+    }
+  };
+
   const signOut = () => {
     setUser(null);
     localStorage.removeItem('loyaltyUser');
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut, upgradeToPremium }}>
       {children}
     </AuthContext.Provider>
   );

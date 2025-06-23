@@ -18,7 +18,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
-  const { user } = useAuth();
+  const { user, upgradeToPremium } = useAuth();
   const isPremium = user?.subscriptionTier === 'premium' || user?.subscriptionTier === 'enterprise';
 
   const menuItems = [
@@ -73,7 +73,11 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
             <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
               <h3 className="font-semibold text-sm text-gray-800 mb-2">Unlock Premium</h3>
               <p className="text-xs text-gray-600 mb-3">Get advanced analytics, AI insights, and more.</p>
-              <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-purple-600">
+              <Button 
+                size="sm" 
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
+                onClick={upgradeToPremium}
+              >
                 Upgrade Now
               </Button>
             </div>

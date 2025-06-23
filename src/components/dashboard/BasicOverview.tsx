@@ -3,8 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, QrCode, Star, Users, TrendingUp } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const BasicOverview = () => {
+  const { upgradeToPremium } = useAuth();
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -12,7 +15,7 @@ export const BasicOverview = () => {
           <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="outline" className="text-gray-600">Basic Plan</Badge>
-            <Button variant="link" className="text-blue-600 p-0 h-auto">
+            <Button variant="link" className="text-blue-600 p-0 h-auto" onClick={upgradeToPremium}>
               Upgrade to Premium for Advanced Analytics
             </Button>
           </div>
@@ -112,7 +115,7 @@ export const BasicOverview = () => {
             </div>
             <div className="flex items-center">
               <TrendingUp className="h-12 w-12 text-blue-600 mr-4" />
-              <Button className="bg-blue-600 hover:bg-blue-700">
+              <Button className="bg-blue-600 hover:bg-blue-700" onClick={upgradeToPremium}>
                 Start Free Trial
               </Button>
             </div>
