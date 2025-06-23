@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { 
   Plus, 
   QrCode, 
@@ -19,15 +19,44 @@ import {
   LineChart,
   Settings
 } from 'lucide-react';
+import { 
+  PieChart as RechartsPieChart, 
+  Cell, 
+  LineChart as RechartsLineChart, 
+  Line, 
+  BarChart as RechartsBarChart, 
+  Bar, 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  ResponsiveContainer 
+} from 'recharts';
+
+const chartConfig = {
+  returning: {
+    label: "Returning",
+    color: "#3b82f6",
+  },
+  new: {
+    label: "New",
+    color: "#e5e7eb",
+  },
+  revenue: {
+    label: "Revenue",
+    color: "#10b981",
+  },
+  roi: {
+    label: "ROI",
+    color: "#8b5cf6",
+  },
+  impact: {
+    label: "Impact",
+    color: "#f59e0b",
+  },
+};
 
 export const PremiumOverview = () => {
-  const [favoriteCharts, setFavoriteCharts] = useState([
-    'customer-segments',
-    'revenue-trend',
-    'campaign-performance',
-    'loyalty-impact'
-  ]);
-
   const quickActions = [
     {
       title: 'Stamp Card QR',
@@ -59,43 +88,37 @@ export const PremiumOverview = () => {
     }
   ];
 
-  const analyticsSnapshots = [
-    {
-      id: 'customer-segments',
-      title: 'Customer Segments',
-      type: 'pie',
-      value: '65% Returning',
-      trend: '+8%',
-      icon: PieChart
-    },
-    {
-      id: 'revenue-trend',
-      title: 'Revenue Growth',
-      type: 'line',
-      value: '$106,400',
-      trend: '+23%',
-      icon: LineChart
-    },
-    {
-      id: 'campaign-performance',
-      title: 'Campaign ROI',
-      type: 'bar',
-      value: '340% Avg',
-      trend: '+45%',
-      icon: BarChart3
-    },
-    {
-      id: 'loyalty-impact',
-      title: 'Loyalty Impact',
-      type: 'area',
-      value: '+42% Revenue',
-      trend: '+12%',
-      icon: TrendingUp
-    }
+  // Chart data
+  const customerSegmentData = [
+    { name: 'Returning', value: 65, fill: '#3b82f6' },
+    { name: 'New', value: 35, fill: '#e5e7eb' }
+  ];
+
+  const revenueData = [
+    { month: 'Jan', revenue: 78400 },
+    { month: 'Feb', revenue: 85200 },
+    { month: 'Mar', revenue: 92100 },
+    { month: 'Apr', revenue: 98500 },
+    { month: 'May', revenue: 106400 }
+  ];
+
+  const campaignData = [
+    { campaign: 'Double Points', roi: 340 },
+    { campaign: 'Holiday Sale', roi: 280 },
+    { campaign: 'Referral Bonus', roi: 420 },
+    { campaign: 'VIP Weekend', roi: 310 }
+  ];
+
+  const loyaltyImpactData = [
+    { month: 'Jan', impact: 28 },
+    { month: 'Feb', impact: 32 },
+    { month: 'Mar', impact: 35 },
+    { month: 'Apr', impact: 39 },
+    { month: 'May', impact: 42 }
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -136,7 +159,7 @@ export const PremiumOverview = () => {
         </CardContent>
       </Card>
 
-      {/* Analytics Snapshots */}
+      {/* Analytics Snapshots with Real Charts */}
       <Card>
         <CardHeader>
           <div className="flex justify-between items-center">
@@ -151,23 +174,93 @@ export const PremiumOverview = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {analyticsSnapshots.map((snapshot) => (
-              <Card key={snapshot.id} className="border-2 hover:border-blue-200 transition-colors">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <snapshot.icon className="h-6 w-6 text-blue-600" />
-                    <Badge variant="outline" className="text-green-600 border-green-200">
-                      {snapshot.trend}
-                    </Badge>
-                  </div>
-                  <h3 className="font-semibold text-sm text-gray-700 mb-1">
-                    {snapshot.title}
-                  </h3>
-                  <p className="text-2xl font-bold text-gray-900">{snapshot.value}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Customer Segments Pie Chart */}
+            <Card className="border-2 hover:border-blue-200 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <PieChart className="h-6 w-6 text-blue-600" />
+                  <Badge variant="outline" className="text-green-600 border-green-200">
+                    +8%
+                  </Badge>
+                </div>
+                <h3 className="font-semibold text-sm text-gray-700 mb-3">Customer Segments</h3>
+                <ChartContainer config={chartConfig} className="h-32">
+                  <RechartsPieChart>
+                    <RechartsPieChart data={customerSegmentData}>
+                      {customerSegmentData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                    </RechartsPieChart>
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                  </RechartsPieChart>
+                </ChartContainer>
+                <p className="text-2xl font-bold text-gray-900 mt-2">65% Returning</p>
+              </CardContent>
+            </Card>
+
+            {/* Revenue Growth Line Chart */}
+            <Card className="border-2 hover:border-blue-200 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <LineChart className="h-6 w-6 text-blue-600" />
+                  <Badge variant="outline" className="text-green-600 border-green-200">
+                    +23%
+                  </Badge>
+                </div>
+                <h3 className="font-semibold text-sm text-gray-700 mb-3">Revenue Growth</h3>
+                <ChartContainer config={chartConfig} className="h-32">
+                  <RechartsLineChart data={revenueData}>
+                    <XAxis dataKey="month" />
+                    <Line type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                  </RechartsLineChart>
+                </ChartContainer>
+                <p className="text-2xl font-bold text-gray-900 mt-2">$106,400</p>
+              </CardContent>
+            </Card>
+
+            {/* Campaign ROI Bar Chart */}
+            <Card className="border-2 hover:border-blue-200 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <BarChart3 className="h-6 w-6 text-blue-600" />
+                  <Badge variant="outline" className="text-green-600 border-green-200">
+                    +45%
+                  </Badge>
+                </div>
+                <h3 className="font-semibold text-sm text-gray-700 mb-3">Campaign ROI</h3>
+                <ChartContainer config={chartConfig} className="h-32">
+                  <RechartsBarChart data={campaignData}>
+                    <XAxis dataKey="campaign" />
+                    <Bar dataKey="roi" fill="#8b5cf6" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                  </RechartsBarChart>
+                </ChartContainer>
+                <p className="text-2xl font-bold text-gray-900 mt-2">340% Avg</p>
+              </CardContent>
+            </Card>
+
+            {/* Loyalty Impact Area Chart */}
+            <Card className="border-2 hover:border-blue-200 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <TrendingUp className="h-6 w-6 text-blue-600" />
+                  <Badge variant="outline" className="text-green-600 border-green-200">
+                    +12%
+                  </Badge>
+                </div>
+                <h3 className="font-semibold text-sm text-gray-700 mb-3">Loyalty Impact</h3>
+                <ChartContainer config={chartConfig} className="h-32">
+                  <AreaChart data={loyaltyImpactData}>
+                    <XAxis dataKey="month" />
+                    <Area type="monotone" dataKey="impact" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.3} />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                  </AreaChart>
+                </ChartContainer>
+                <p className="text-2xl font-bold text-gray-900 mt-2">+42% Revenue</p>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>

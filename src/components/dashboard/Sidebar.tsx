@@ -20,17 +20,38 @@ interface SidebarProps {
 export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
   const { user, upgradeToPremium } = useAuth();
   const isPremium = user?.subscriptionTier === 'premium' || user?.subscriptionTier === 'enterprise';
+  const isTrial = user?.subscriptionStatus === 'trial';
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: Info },
-    { id: 'customers', label: 'Customers', icon: Users },
-    { id: 'campaigns', label: 'Campaigns', icon: Star },
-    { id: 'qrcodes', label: 'QR Codes', icon: QrCode },
+    { 
+      id: 'customers', 
+      label: 'Customers', 
+      icon: Users,
+      showProBadge: isPremium && isTrial // Advanced customer features in premium
+    },
+    { 
+      id: 'campaigns', 
+      label: 'Campaigns', 
+      icon: Star,
+      showProBadge: isPremium && isTrial // Advanced campaign features in premium
+    },
+    { 
+      id: 'qrcodes', 
+      label: 'QR Codes', 
+      icon: QrCode,
+      showProBadge: isPremium && isTrial // Advanced QR features in premium
+    },
   ];
 
   // Add analytics tab for premium users
   if (isPremium) {
-    menuItems.splice(4, 0, { id: 'analytics', label: 'Analytics', icon: BarChart3 });
+    menuItems.splice(4, 0, { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      icon: BarChart3,
+      showProBadge: isTrial // Only show PRO badge during trial
+    });
   }
 
   menuItems.push({ id: 'settings', label: 'Settings', icon: Settings });
@@ -59,7 +80,7 @@ export const Sidebar = ({ activeTab, onTabChange }: SidebarProps) => {
                 >
                   <item.icon className="h-5 w-5 mr-3" />
                   {item.label}
-                  {item.id === 'analytics' && isPremium && (
+                  {item.showProBadge && (
                     <Badge className="ml-auto bg-purple-100 text-purple-700 text-xs">
                       PRO
                     </Badge>
