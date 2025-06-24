@@ -13,6 +13,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   Calendar as CalendarIcon, 
   Star, 
@@ -24,7 +25,11 @@ import {
   Sparkles,
   Heart,
   Zap,
-  Crown
+  Crown,
+  ChevronRight,
+  ChevronLeft,
+  Settings,
+  ExternalLink
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -41,6 +46,7 @@ interface CampaignConfig {
   endDate?: Date;
   targetAudience: 'all' | 'new_customers' | 'vip' | 'birthday' | 'custom';
   isPersonalized: boolean;
+  selectedCustomers: string[];
   conditions: {
     minPurchase?: number;
     maxRedemptions?: number;
@@ -54,13 +60,17 @@ interface CampaignConfig {
 }
 
 export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalProps) => {
+  const [activeTab, setActiveTab] = useState('basics');
   const [config, setConfig] = useState<CampaignConfig>({
     name: '',
     description: '',
     type: 'percentage_discount',
     targetAudience: 'all',
     isPersonalized: false,
-    conditions: {},
+    selectedCustomers: [],
+    conditions: {
+      validDays: []
+    },
     reward: {
       value: 10,
       description: '10% Off Your Order'
@@ -127,6 +137,23 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
     { id: 'custom', label: 'Custom Segment', description: 'Define custom criteria' }
   ];
 
+  const daysOfWeek = [
+    { id: 'monday', label: 'Mon', full: 'Monday' },
+    { id: 'tuesday', label: 'Tue', full: 'Tuesday' },
+    { id: 'wednesday', label: 'Wed', full: 'Wednesday' },
+    { id: 'thursday', label: 'Thu', full: 'Thursday' },
+    { id: 'friday', label: 'Fri', full: 'Friday' },
+    { id: 'saturday', label: 'Sat', full: 'Saturday' },
+    { id: 'sunday', label: 'Sun', full: 'Sunday' }
+  ];
+
+  const mockCustomers = [
+    { id: '1', name: 'John Smith', email: 'john@example.com', visits: 15 },
+    { id: '2', name: 'Sarah Johnson', email: 'sarah@example.com', visits: 8 },
+    { id: '3', name: 'Mike Davis', email: 'mike@example.com', visits: 22 },
+    { id: '4', name: 'Lisa Wilson', email: 'lisa@example.com', visits: 5 }
+  ];
+
   const updateRewardDescription = () => {
     const selectedType = campaignTypes.find(t => t.id === config.type);
     let description = '';
@@ -176,6 +203,48 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
     setTimeout(updateRewardDescription, 0);
   };
 
+  const handleDayToggle = (dayId: string) => {
+    const currentDays = config.conditions.validDays || [];
+    const newDays = currentDays.includes(dayId)
+      ? currentDays.filter(d => d !== dayId)
+      : [...currentDays, dayId];
+    
+    setConfig(prev => ({
+      ...prev,
+      conditions: { ...prev.conditions, validDays: newDays }
+    }));
+  };
+
+  const handleCustomerToggle = (customerId: string) => {
+    const newSelected = config.selectedCustomers.includes(customerId)
+      ? config.selectedCustomers.filter(id => id !== customerId)
+      : [...config.selectedCustomers, customerId];
+    
+    setConfig(prev => ({ ...prev, selectedCustomers: newSelected }));
+  };
+
+  const getNextTab = () => {
+    const tabs = ['basics', 'type', 'targeting', 'review'];
+    const currentIndex = tabs.indexOf(activeTab);
+    return currentIndex < tabs.length - 1 ? tabs[currentIndex + 1] : null;
+  };
+
+  const getPrevTab = () => {
+    const tabs = ['basics', 'type', 'targeting', 'review'];
+    const currentIndex = tabs.indexOf(activeTab);
+    return currentIndex > 0 ? tabs[currentIndex - 1] : null;
+  };
+
+  const handleNext = () => {
+    const nextTab = getNextTab();
+    if (nextTab) setActiveTab(nextTab);
+  };
+
+  const handlePrev = () => {
+    const prevTab = getPrevTab();
+    if (prevTab) setActiveTab(prevTab);
+  };
+
   const handleSave = () => {
     console.log('Saving campaign:', config);
     onOpenChange(false);
@@ -190,7 +259,7 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
           <DialogTitle className="text-2xl">Create New Campaign</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="basics" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="basics">Basics</TabsTrigger>
             <TabsTrigger value="type">Campaign Type</TabsTrigger>
@@ -267,16 +336,58 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="personalized"
-                    checked={config.isPersonalized}
-                    onCheckedChange={(checked) => setConfig({ ...config, isPersonalized: checked })}
-                  />
-                  <Label htmlFor="personalized">Enable Personalized Offers</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="personalized"
+                      checked={config.isPersonalized}
+                      onCheckedChange={(checked) => setConfig({ ...config, isPersonalized: checked })}
+                    />
+                    <Label htmlFor="personalized">Enable Personalized Offers</Label>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    When enabled, you can select specific customers to receive this campaign instead of making it available to all customers in the target audience.
+                  </p>
+
+                  {config.isPersonalized && (
+                    <Card className="mt-4">
+                      <CardHeader>
+                        <CardTitle className="text-lg">Select Customers</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3 max-h-48 overflow-y-auto">
+                          {mockCustomers.map((customer) => (
+                            <div key={customer.id} className="flex items-center space-x-3 p-2 border rounded-lg">
+                              <Checkbox
+                                checked={config.selectedCustomers.includes(customer.id)}
+                                onCheckedChange={() => handleCustomerToggle(customer.id)}
+                              />
+                              <div className="flex-1">
+                                <p className="font-medium">{customer.name}</p>
+                                <p className="text-sm text-gray-600">{customer.email} • {customer.visits} visits</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {config.selectedCustomers.length > 0 && (
+                          <p className="text-sm text-blue-600 mt-2">
+                            {config.selectedCustomers.length} customer(s) selected
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </CardContent>
             </Card>
+
+            <div className="flex justify-between">
+              <div></div>
+              <Button onClick={handleNext} className="flex items-center">
+                Next: Campaign Type
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="type" className="space-y-6 mt-6">
@@ -385,6 +496,17 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
                 </CardContent>
               </Card>
             )}
+
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={handlePrev} className="flex items-center">
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back: Basics
+              </Button>
+              <Button onClick={handleNext} className="flex items-center">
+                Next: Targeting
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="targeting" className="space-y-6 mt-6">
@@ -422,35 +544,84 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <Label>Product Category</Label>
-                        <Select>
+                        <div className="flex items-center justify-between mb-2">
+                          <Label>Product Category</Label>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center text-xs"
+                            onClick={() => console.log('Navigate to settings')}
+                          >
+                            <Settings className="h-3 w-3 mr-1" />
+                            Manage Categories
+                            <ExternalLink className="h-3 w-3 ml-1" />
+                          </Button>
+                        </div>
+                        <Select value={config.conditions.category} onValueChange={(value) => 
+                          setConfig({
+                            ...config,
+                            conditions: { ...config.conditions, category: value }
+                          })
+                        }>
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Categories</SelectItem>
-                            <SelectItem value="food">Food & Beverages</SelectItem>
+                            <SelectItem value="beverages">Beverages</SelectItem>
+                            <SelectItem value="food">Food Items</SelectItem>
+                            <SelectItem value="desserts">Desserts</SelectItem>
                             <SelectItem value="retail">Retail Items</SelectItem>
-                            <SelectItem value="services">Services</SelectItem>
                           </SelectContent>
                         </Select>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Don't see your category? Add it in the Settings page.
+                        </p>
                       </div>
                       
                       <div>
-                        <Label>Valid Days of Week</Label>
-                        <div className="flex gap-2 mt-2">
-                          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                            <Button key={day} variant="outline" size="sm">
-                              {day}
+                        <Label className="mb-3 block">Valid Days of Week</Label>
+                        <div className="flex gap-2 flex-wrap">
+                          {daysOfWeek.map((day) => (
+                            <Button
+                              key={day.id}
+                              variant={config.conditions.validDays?.includes(day.id) ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handleDayToggle(day.id)}
+                              className={`transition-colors ${
+                                config.conditions.validDays?.includes(day.id)
+                                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                  : 'hover:bg-blue-50'
+                              }`}
+                            >
+                              {day.label}
                             </Button>
                           ))}
                         </div>
+                        {config.conditions.validDays && config.conditions.validDays.length > 0 && (
+                          <p className="text-sm text-blue-600 mt-2">
+                            Campaign active on: {config.conditions.validDays.map(dayId => 
+                              daysOfWeek.find(d => d.id === dayId)?.full
+                            ).join(', ')}
+                          </p>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
                 )}
               </CardContent>
             </Card>
+
+            <div className="flex justify-between">
+              <Button variant="outline" onClick={handlePrev} className="flex items-center">
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back: Campaign Type
+              </Button>
+              <Button onClick={handleNext} className="flex items-center">
+                Next: Review
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
           </TabsContent>
 
           <TabsContent value="review" className="space-y-6 mt-6">
@@ -481,17 +652,37 @@ export const CreateCampaignModal = ({ open, onOpenChange }: CreateCampaignModalP
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-purple-500" />
-                  <span className="text-sm">
-                    {config.isPersonalized ? 'Personalized offers enabled' : 'Standard campaign'}
-                  </span>
-                </div>
+                {config.isPersonalized && (
+                  <div>
+                    <h3 className="font-semibold mb-2">Personalized Targeting</h3>
+                    <div className="flex items-center gap-2">
+                      <Crown className="h-5 w-5 text-purple-500" />
+                      <span className="text-sm">
+                        {config.selectedCustomers.length} specific customer(s) selected
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {config.conditions.validDays && config.conditions.validDays.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-2">Schedule</h3>
+                    <p className="text-sm">
+                      Active on: {config.conditions.validDays.map(dayId => 
+                        daysOfWeek.find(d => d.id === dayId)?.full
+                      ).join(', ')}
+                    </p>
+                  </div>
+                )}
 
                 <div className="pt-4 border-t">
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => onOpenChange(false)}>
                       Cancel
+                    </Button>
+                    <Button variant="outline" onClick={handlePrev} className="flex items-center">
+                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      Back: Targeting
                     </Button>
                     <Button onClick={handleSave} className="flex-1">
                       <Zap className="h-4 w-4 mr-2" />

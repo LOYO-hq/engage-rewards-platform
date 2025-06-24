@@ -2,11 +2,14 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Star, Calendar } from 'lucide-react';
+import { Plus, Star, Calendar, BarChart3, Edit, Trash2 } from 'lucide-react';
 import { CreateCampaignModal } from '../CreateCampaignModal';
+import { CampaignAnalyticsModal } from '../CampaignAnalyticsModal';
 
 export const CampaignsTab = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   
   const campaigns = [
     {
@@ -16,7 +19,9 @@ export const CampaignsTab = () => {
       status: 'Active',
       startDate: '2024-01-15',
       endDate: '2024-01-17',
-      participants: 156
+      participants: 156,
+      revenue: 2840,
+      conversionRate: 12.5
     },
     {
       id: 2,
@@ -25,7 +30,9 @@ export const CampaignsTab = () => {
       status: 'Scheduled',
       startDate: '2024-01-20',
       endDate: '2024-01-31',
-      participants: 0
+      participants: 0,
+      revenue: 0,
+      conversionRate: 0
     },
     {
       id: 3,
@@ -34,9 +41,65 @@ export const CampaignsTab = () => {
       status: 'Active',
       startDate: '2024-01-01',
       endDate: '2024-12-31',
-      participants: 89
+      participants: 89,
+      revenue: 1650,
+      conversionRate: 8.2
     }
   ];
+
+  const campaignTemplates = [
+    {
+      id: 'double_points',
+      name: 'Double Points',
+      description: '2x loyalty points for weekend purchases',
+      icon: Star,
+      config: {
+        type: 'points_multiplier',
+        value: 2,
+        validDays: ['saturday', 'sunday']
+      }
+    },
+    {
+      id: 'birthday_special',
+      name: 'Birthday Special',
+      description: '25% off during birthday month',
+      icon: Calendar,
+      config: {
+        type: 'percentage_discount',
+        value: 25,
+        targetAudience: 'birthday'
+      }
+    },
+    {
+      id: 'referral_program',
+      name: 'Referral Program',
+      description: '$10 credit for each successful referral',
+      icon: Plus,
+      config: {
+        type: 'referral',
+        value: 10
+      }
+    }
+  ];
+
+  const handleEditCampaign = (campaignId: number) => {
+    console.log('Editing campaign:', campaignId);
+    // In a real app, this would populate the create modal with existing data
+    setShowCreateModal(true);
+  };
+
+  const handleViewAnalytics = (campaignId: number) => {
+    setSelectedCampaignId(campaignId);
+    setShowAnalyticsModal(true);
+  };
+
+  const handleUseTemplate = (template: any) => {
+    console.log('Using template:', template);
+    // In a real app, this would pre-populate the create modal with template data
+    setShowCreateModal(true);
+  };
+
+  const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
 
   return (
     <div className="p-8 space-y-8">
@@ -74,11 +137,29 @@ export const CampaignsTab = () => {
                   <Star className="h-4 w-4 mr-2" />
                   {campaign.participants} participants
                 </div>
+                {campaign.status === 'Active' && (
+                  <div className="text-sm text-gray-600">
+                    <p>Revenue: ${campaign.revenue}</p>
+                    <p>Conversion: {campaign.conversionRate}%</p>
+                  </div>
+                )}
                 <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleEditCampaign(campaign.id)}
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleViewAnalytics(campaign.id)}
+                  >
+                    <BarChart3 className="h-3 w-3 mr-1" />
                     Analytics
                   </Button>
                 </div>
@@ -91,21 +172,32 @@ export const CampaignsTab = () => {
       <Card>
         <CardHeader>
           <CardTitle>Campaign Templates</CardTitle>
+          <p className="text-sm text-gray-600">Quick-start templates for common campaign types</p>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
-            <Button variant="outline" className="h-20 flex-col">
-              <Star className="h-6 w-6 mb-2" />
-              Double Points
-            </Button>
-            <Button variant="outline" className="h-20 flex-col">
-              <Calendar className="h-6 w-6 mb-2" />
-              Birthday Special
-            </Button>
-            <Button variant="outline" className="h-20 flex-col">
-              <Plus className="h-6 w-6 mb-2" />
-              Referral Program
-            </Button>
+            {campaignTemplates.map((template) => (
+              <Card 
+                key={template.id}
+                className="cursor-pointer transition-all hover:shadow-md hover:scale-105"
+                onClick={() => handleUseTemplate(template)}
+              >
+                <CardContent className="p-4 text-center">
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="p-3 bg-blue-100 rounded-full">
+                      <template.icon className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{template.name}</h3>
+                      <p className="text-sm text-gray-600 mt-1">{template.description}</p>
+                    </div>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Use Template
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -114,6 +206,14 @@ export const CampaignsTab = () => {
         open={showCreateModal} 
         onOpenChange={setShowCreateModal}
       />
+
+      {selectedCampaign && (
+        <CampaignAnalyticsModal
+          open={showAnalyticsModal}
+          onOpenChange={setShowAnalyticsModal}
+          campaign={selectedCampaign}
+        />
+      )}
     </div>
   );
 };
